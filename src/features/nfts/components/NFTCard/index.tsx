@@ -1,10 +1,12 @@
 import { Icon } from "@/shared/components/Icon";
+import type { EthString } from "@/shared/lib/eth";
+import { formatEth } from "@/shared/lib/eth";
 
 export interface NFTCardProps {
   id: string;
   name: string;
-  price: number;
-  oldPrice?: number;
+  price: EthString;
+  oldPrice?: EthString;
   badge?: string;
   image: string;
   collection: string;
@@ -31,9 +33,9 @@ export function NFTCard({ name, price, oldPrice, badge, image }: NFTCardProps) {
       <div className="flex flex-col gap-1 px-1">
         <h4 className="font-mono text-base font-normal leading-4 text-foreground">{name}</h4>
         <div className="flex items-center gap-2">
-          <span className="font-mono text-lg font-bold leading-4 text-primary">{price.toFixed(2)} ETH</span>
+          <span className="font-mono text-lg font-bold leading-4 text-primary">{formatEth(price)} ETH</span>
           {oldPrice && (
-            <span className="font-mono text-lg font-normal leading-4 text-[#B39463]">{oldPrice.toFixed(2)} ETH</span>
+            <span className="font-mono text-lg font-normal leading-4 text-[#B39463]">{formatEth(oldPrice)} ETH</span>
           )}
         </div>
       </div>

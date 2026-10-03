@@ -8,7 +8,7 @@ export type NameIcons =
   'footer-notch' | 'jungle-logo' |
   'home' | 'heart' | 'user' | 'buy' |
   'logout' | 'filter' |
-  'cart-solid' | 'filter-header' | 'arrow-right';
+  'cart-solid' | 'filter-header' | 'arrow-right' | 'verified';
 
 export type IconProps = {
   name: NameIcons;

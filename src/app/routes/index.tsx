@@ -1,13 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { listNfts } from '@/infrastructure/http';
 import { HeroBanner } from '@/features/banners/components/HeroBanner';
 import { CatalogLayout } from '@/features/catalog/layouts/CatalogLayout';
 import { CatalogSidebar } from '@/features/catalog/components/CatalogSidebar';
 import { CatalogHeader } from '@/features/catalog/components/CatalogHeader';
 import { CatalogGrid } from '@/features/catalog/components/CatalogGrid';
 import { CatalogPagination } from '@/features/catalog/components/CatalogPagination';
-import { NFTCardProps } from '@/features/nfts/components/NFTCard';
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -15,11 +14,8 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['nfts'],
-    queryFn: async () => {
-      const res = await axios.get('/api/nfts');
-      return res.data;
-    }
+    queryKey: ['nfts', { page: 1 }],
+    queryFn: ({ signal }) => listNfts({ page: 1 }, signal),
   });
 
   return (
