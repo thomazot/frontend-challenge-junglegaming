@@ -15,7 +15,7 @@ export function FooterDesktop() {
               <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-ink font-bold text-2xl">
                 W
               </div>
-              <h3 className="font-bold text-[17px]">Segurança da carteira</h3>
+              <h2 className="font-bold text-[17px]">Segurança da carteira</h2>
               <p className="text-text-secondary text-[14px] leading-relaxed">
                 Proteja sua carteira e colecione arte digital verificada com confiança.
               </p>
@@ -25,7 +25,7 @@ export function FooterDesktop() {
               <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-ink font-bold text-2xl">
                 C
               </div>
-              <h3 className="font-bold text-[17px]">Criadores em destaque</h3>
+              <h2 className="font-bold text-[17px]">Criadores em destaque</h2>
               <p className="text-text-secondary text-[14px] leading-relaxed">
                 Conheça artistas, estúdios e comunidades que moldam a cultura digital na rede.
               </p>
@@ -35,7 +35,7 @@ export function FooterDesktop() {
               <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center text-ink font-bold text-2xl">
                 D
               </div>
-              <h3 className="font-bold text-[17px]">Alertas de lançamentos</h3>
+              <h2 className="font-bold text-[17px]">Alertas de lançamentos</h2>
               <p className="text-text-secondary text-[14px] leading-relaxed">
                 Receba calendários de cunhagem, novidades de listas de acesso e análises do mercado.
               </p>
@@ -68,7 +68,7 @@ export function FooterDesktop() {
           <div className="mx-auto px-8 py-16 grid grid-cols-4 gap-8">
             {/* Links Columns */}
             <div className="flex flex-col gap-4">
-              <h4 className="font-bold text-[18px]">Meu perfil</h4>
+              <h3 className="font-bold text-[18px]">Meu perfil</h3>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Meu perfil</Link>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Minha coleção</Link>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Atividade</Link>
@@ -77,7 +77,7 @@ export function FooterDesktop() {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h4 className="font-bold text-[18px]">Central de ajuda</h4>
+              <h3 className="font-bold text-[18px]">Central de ajuda</h3>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Central de ajuda</Link>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Como comprar NFTs</Link>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Carteira e segurança</Link>
@@ -86,7 +86,7 @@ export function FooterDesktop() {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h4 className="font-bold text-[18px]z">Coleções</h4>
+              <h3 className="font-bold text-[18px]">Coleções</h3>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Arte digital</Link>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Fotografia</Link>
               <Link to="/" className="text-foreground text-[14px] hover:text-primary transition-colors">Música</Link>
