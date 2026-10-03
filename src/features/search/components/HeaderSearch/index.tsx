@@ -57,6 +57,7 @@ export function HeaderSearch({ isExpanded = false, setIsExpanded }: Readonly<Hea
         ref={inputRef}
         type="search"
         placeholder="Explorar coleções"
+        aria-label="Explorar coleções"
         className={headerSearchVariants.input({ isExpanded })}
         onBlur={(e) => {
           if (!e.target.value) {
