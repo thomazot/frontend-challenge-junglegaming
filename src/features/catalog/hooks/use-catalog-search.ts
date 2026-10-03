@@ -39,6 +39,7 @@ export function useCatalogSearch() {
       // New search term restarts pagination.
       search: (prev: Record<string, unknown>) => ({ ...prev, q: q || undefined, page: undefined }),
       replace: true,
+      resetScroll: false,
     });
   }, [debounced, isCatalog, search.q, navigate]);
 

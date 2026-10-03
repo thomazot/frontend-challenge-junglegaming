@@ -11,7 +11,7 @@ const headerSearchVariants = {
     {
       variants: {
         isExpanded: {
-          true: "justify-end w-full bg-card rounded-[10px] px-1 h-11.25 text-muted-foreground",
+          true: "justify-end w-full bg-card rounded-xl px-1 h-11 text-muted-foreground",
           false: "w-10 h-10 bg-transparent rounded-md",
         },
       },
@@ -38,12 +38,12 @@ const headerSearchVariants = {
   }),
 };
 
-type HeaderSearchProps = {
-  isExpanded: boolean;
-  setIsExpanded: (isExpanded: boolean) => void;
+interface HeaderSearchProps {
+  readonly isExpanded?: boolean;
+  readonly setIsExpanded: (isExpanded: boolean) => void;
 }
 
-export function HeaderSearch({ isExpanded = false, setIsExpanded }: Readonly<HeaderSearchProps>) {
+export function HeaderSearch({ isExpanded = false, setIsExpanded }: HeaderSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { value, setValue } = useCatalogSearch();
 

@@ -37,6 +37,7 @@ export interface ApiErrorBody {
 /* ------------------------------- NFTs -------------------------------- */
 export type NetworkId = "Ethereum" | "Polygon" | "Solana";
 export type NftSort = "recent" | "price-asc" | "price-desc";
+export type NftTab = "todos" | "novos" | "alta";
 
 export interface Nft {
   id: string;
@@ -48,6 +49,8 @@ export interface Nft {
   creator: string;
   price: EthString;
   oldPrice?: EthString;
+  /** Curatorial tags used by catalog tabs (e.g. "new", "trending"). */
+  tags: string[];
   badge?: string;
   edition: { total: number; available: number };
   maxPerOrder: number;
@@ -63,6 +66,7 @@ export interface NftListParams {
   minPrice?: EthString;
   maxPrice?: EthString;
   sort?: NftSort;
+  tab?: NftTab;
   page?: number;
   limit?: number;
 }

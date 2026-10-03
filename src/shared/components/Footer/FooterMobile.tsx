@@ -4,7 +4,7 @@ import { Icon } from "@/shared/components/Icon";
 
 export function FooterMobile() {
   return (
-    <footer className="fixed bottom-0 left-0 w-full z-50 px-4 pb-0">
+    <footer className="fixed bottom-0 left-0 w-screen z-50 pb-0">
       <div className="relative w-full h-23.75">
 
         {/* Flawless SVG Background Layer from Figma */}
@@ -13,13 +13,15 @@ export function FooterMobile() {
           style={{ filter: 'drop-shadow(0 -10px 30px rgba(10, 6, 4, 0.45))' }}
         >
           {/* Left Side */}
-          <div className="flex-1 bg-surface-card rounded-tl-[29px] translate-x-1 z-10"></div>
+          <div className="flex-1 bg-surface-card rounded-tl-3xl translate-x-1 z-10"></div>
 
-          {/* Center SVG Notch */}
-          <Icon name="footer-notch" className="text-surface-card shrink-0 z-0" />
+          {/* Center SVG Notch — original size to create the curve for the floating button */}
+          <div className="shrink-0 z-0 w-37.925 h-23.75 text-surface-card [&>svg]:w-full [&>svg]:h-full">
+            <Icon name="footer-notch" size="100%" />
+          </div>
 
           {/* Right Side */}
-          <div className="flex-1 bg-surface-card rounded-tr-[29px] -translate-x-1 z-10"></div>
+          <div className="flex-1 bg-surface-card rounded-tr-3xl -translate-x-1 z-10"></div>
         </div>
 
         {/* Icons Layer */}

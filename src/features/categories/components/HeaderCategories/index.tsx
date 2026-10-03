@@ -15,7 +15,7 @@ import { CompatibleWallets } from "@/shared/components/CompatibleWallets";
 import { ContactInfo } from "@/shared/components/ContactInfo";
 
 interface HeaderCategoriesProps {
-  children: ReactNode;
+  readonly children: ReactNode;
 }
 
 export function HeaderCategories({ children }: HeaderCategoriesProps) {

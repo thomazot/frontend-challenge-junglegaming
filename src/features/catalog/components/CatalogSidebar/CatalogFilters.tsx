@@ -7,14 +7,16 @@ import { Slider } from "@/shared/ui/slider";
 import { Button } from "@/shared/ui/button";
 
 interface CatalogFiltersProps {
-  collections: { label: string; count: number }[];
-  networks: { label: string; count: number }[];
-  priceRange: { min: EthString; max: EthString };
+  readonly collections: { label: string; count: number }[];
+  readonly networks: { label: string; count: number }[];
+  readonly priceRange: { min: EthString; max: EthString };
+  /** Called after a filter changes (e.g. to close the mobile sheet). */
+  readonly onFilterSelect?: () => void;
 }
 
 const toNumber = (value: EthString): number => Number(value);
 
-export function CatalogFilters({ collections, networks, priceRange }: CatalogFiltersProps) {
+export function CatalogFilters({ collections, networks, priceRange, onFilterSelect }: CatalogFiltersProps) {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/" });
 
@@ -29,7 +31,12 @@ export function CatalogFilters({ collections, networks, priceRange }: CatalogFil
     const current = search[key] ?? [];
     const next = current.includes(label) ? current.filter((item) => item !== label) : [...current, label];
     // Any filter change restarts pagination.
-    navigate({ search: (prev) => ({ ...prev, [key]: next.length ? next : undefined, page: undefined }), replace: true });
+    navigate({
+      search: (prev) => ({ ...prev, [key]: next.length ? next : undefined, page: undefined }),
+      replace: true,
+      resetScroll: false,
+    });
+    onFilterSelect?.();
   };
 
   const applyPrice = () => {
@@ -41,7 +48,9 @@ export function CatalogFilters({ collections, networks, priceRange }: CatalogFil
         page: undefined,
       }),
       replace: true,
+      resetScroll: false,
     });
+    onFilterSelect?.();
   };
 
   const filterRow = (key: "collection" | "network", label: string, count: number) => {
@@ -51,7 +60,7 @@ export function CatalogFilters({ collections, networks, priceRange }: CatalogFil
         key={label}
         onClick={() => toggle(key, label)}
         aria-pressed={isSelected}
-        className="flex items-center justify-between text-[15px] transition-colors text-left font-mono h-10"
+        className="flex items-center justify-between text-sm transition-colors text-left font-mono h-10"
       >
         <span className={isSelected ? "text-primary" : "text-muted-foreground"}>{label}</span>
         <span className={isSelected ? "text-primary" : "text-muted-foreground"}>({count})</span>
@@ -81,7 +90,7 @@ export function CatalogFilters({ collections, networks, priceRange }: CatalogFil
             className="w-full"
             onValueChange={(value) => setRange(value as [number, number])}
           />
-          <p className="text-[15px] font-mono text-foreground font-normal">
+          <p className="text-sm font-mono text-foreground font-normal">
             Preço: {formatEth(String(range[0]))} - {formatEth(String(range[1]))} ETH
           </p>
           <Button

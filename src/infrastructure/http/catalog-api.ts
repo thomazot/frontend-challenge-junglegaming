@@ -10,6 +10,7 @@ const toListSearchParams = (params: NftListParams): URLSearchParams => {
   if (params.minPrice) search.set("minPrice", params.minPrice);
   if (params.maxPrice) search.set("maxPrice", params.maxPrice);
   if (params.sort) search.set("sort", params.sort);
+  if (params.tab && params.tab !== "todos") search.set("tab", params.tab);
   if (params.page) search.set("page", String(params.page));
   if (params.limit) search.set("limit", String(params.limit));
   return search;

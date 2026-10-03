@@ -50,7 +50,7 @@ function PaginationLink({
       data-slot="pagination-link"
       data-active={isActive}
       className={cn(
-        "flex flex-col items-center justify-center w-[35px] h-[35px] gap-2.5 font-mono text-lg font-normal leading-4 select-none transition-colors cursor-pointer rounded border",
+        "flex flex-col items-center justify-center w-8.75 h-8.75 gap-2.5 font-mono text-lg font-normal leading-4 select-none transition-colors cursor-pointer rounded border",
         isActive
           ? "bg-primary border-primary text-[#140D0A]"
           : "border-border text-foreground hover:bg-card hover:border-primary px-3 pt-2 pb-2.5",
@@ -71,7 +71,7 @@ function PaginationPrevious({
       className={cn("p-0 border-border text-foreground hover:border-primary hover:text-primary", className)}
       {...props}
     >
-      <ChevronLeftIcon className="w-[18px] h-[18px]" />
+      <ChevronLeftIcon className="w-4.5 h-4.5" />
     </PaginationLink>
   )
 }
@@ -86,7 +86,7 @@ function PaginationNext({
       className={cn("p-0 border-border text-foreground hover:border-primary hover:text-primary", className)}
       {...props}
     >
-      <ChevronRightIcon className="w-[18px] h-[18px]" />
+      <ChevronRightIcon className="w-4.5 h-4.5" />
     </PaginationLink>
   )
 }
@@ -99,10 +99,10 @@ function PaginationEllipsis({
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn("flex w-[35px] h-[35px] items-center justify-center font-mono text-lg font-normal text-foreground rounded border border-border", className)}
+      className={cn("flex w-8.75 h-8.75 items-center justify-center font-mono text-lg font-normal text-foreground rounded border border-border", className)}
       {...props}
     >
-      <MoreHorizontalIcon className="w-[18px] h-[18px]" />
+      <MoreHorizontalIcon className="w-4.5 h-4.5" />
       <span className="sr-only">More pages</span>
     </span>
   )

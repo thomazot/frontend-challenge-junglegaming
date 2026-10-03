@@ -43,6 +43,8 @@ export const buildNfts = (): Nft[] =>
       edition: { total, available },
       maxPerOrder: 3,
       version: 1,
+      // Curatorial tags for catalog tabs: "new" (novos lançamentos), "trending" (em alta).
+      tags: [index % 3 === 0 ? "new" : "", index % 4 === 0 ? "trending" : ""].filter(Boolean),
       updatedAt: new Date(BASE_TIME - index * DAY_MS).toISOString(),
     };
   });

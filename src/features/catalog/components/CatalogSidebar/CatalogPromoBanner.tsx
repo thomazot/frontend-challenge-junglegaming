@@ -1,11 +1,11 @@
 export function CatalogPromoBanner() {
   return (
-    <div className="flex flex-col border border-border/20 rounded-t-none rounded-b-[22px] overflow-hidden bg-card">
+    <div className="flex flex-col border border-border/20 rounded-t-none rounded-b-2xl overflow-hidden bg-card">
       <div className="p-4 flex flex-col gap-1 text-cente">
         <h4 className="text-primary font-mono text-2xl font-bold uppercase tracking-wider text-left">
           NFT em Destaque
         </h4>
-        <h3 className="text-foreground font-mono text-[22px] font-bold uppercase">
+        <h3 className="text-foreground font-mono text-lg font-bold uppercase">
           Oferta Limitada
         </h3>
       </div>
@@ -13,7 +13,7 @@ export function CatalogPromoBanner() {
         <img
           src="/images/monkey-nft.jpg"
           alt="NFT Promo"
-          className="object-cover w-full h-full rounded-[22px]"
+          className="object-cover w-full h-full rounded-2xl"
           loading="lazy"
         />
       </div>

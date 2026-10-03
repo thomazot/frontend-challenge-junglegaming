@@ -1,5 +1,7 @@
 import { NFTCard, NFTCardProps } from "@/features/nfts/components/NFTCard";
 
+export { CatalogGridSkeleton } from "./CatalogGridSkeleton";
+
 export function CatalogGrid({ items }: { items: NFTCardProps[] }) {
   if (items.length === 0) {
     return (

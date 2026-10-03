@@ -11,9 +11,9 @@ export function CatalogMobileToolbar() {
       {/* Search Input */}
       <div className="flex-1 flex items-center gap-3 bg-[#2A1A12] rounded-xl px-4 py-3">
         <Icon name="search" className="text-primary w-5 h-5" />
-        <input 
-          type="text" 
-          placeholder="Explorar coleções" 
+        <input
+          type="text"
+          placeholder="Explorar coleções"
           className="bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground w-full font-mono text-sm"
         />
       </div>
@@ -31,7 +31,7 @@ export function CatalogMobileToolbar() {
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-heading font-bold text-primary">Filtros</h2>
             </div>
-            <CatalogSidebar />
+            <CatalogSidebar onFilterSelect={() => setOpen(false)} />
           </div>
         </SheetContent>
       </Sheet>

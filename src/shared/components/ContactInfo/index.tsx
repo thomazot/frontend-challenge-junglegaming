@@ -1,6 +1,11 @@
 import { cn } from "cn";
 
-export function ContactInfo({ asWrapper = true, className }: { asWrapper?: boolean; className?: string }) {
+interface ContactInfoProps {
+  readonly asWrapper?: boolean;
+  readonly className?: string;
+}
+
+export function ContactInfo({ asWrapper = true, className }: ContactInfoProps) {
   const content = (
     <>
       <span>contato@email.com</span>

@@ -6,7 +6,7 @@ export function HeaderMobileSearch() {
   const { value, setValue } = useCatalogSearch();
 
   return (
-    <div className="flex flex-1 items-center gap-3 bg-card rounded-[10px] px-4 h-11.25 text-muted-foreground">
+    <div className="flex flex-1 items-center gap-3 bg-card rounded-xl px-4 h-11 text-muted-foreground">
       <Icon name="search-mobile" />
       <Input aria-label="Explorar coleções"
         type="search"

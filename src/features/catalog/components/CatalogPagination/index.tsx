@@ -8,9 +8,9 @@ import {
 } from "@/shared/ui/pagination";
 
 interface CatalogPaginationProps {
-  page: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
+  readonly page: number;
+  readonly totalPages: number;
+  readonly onPageChange: (page: number) => void;
 }
 
 export function CatalogPagination({ page, totalPages, onPageChange }: CatalogPaginationProps) {

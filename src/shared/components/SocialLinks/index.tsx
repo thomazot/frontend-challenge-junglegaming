@@ -29,7 +29,12 @@ const SOCIAL_DATA: Array<{ name: NameIcons; label: string; href: string }> = [
   }
 ]
 
-export function SocialLinks({ variant = "desktop", className }: { variant?: "desktop" | "mobile"; className?: string }) {
+interface SocialLinksProps {
+  readonly variant?: "desktop" | "mobile";
+  readonly className?: string;
+}
+
+export function SocialLinks({ variant = "desktop", className }: SocialLinksProps) {
   const isMobile = variant === "mobile";
   const linkClass = cn(
     "rounded border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-ink transition-colors",

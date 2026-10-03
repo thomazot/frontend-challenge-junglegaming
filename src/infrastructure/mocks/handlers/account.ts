@@ -14,7 +14,7 @@ const hasMagicBytes = (bytes: Uint8Array, signature: readonly number[]) => signa
 
 const toBase64 = (bytes: Uint8Array) => {
   let binary = "";
-  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCodePoint(...bytes.subarray(i, i + 0x8000));
   return btoa(binary);
 };
 

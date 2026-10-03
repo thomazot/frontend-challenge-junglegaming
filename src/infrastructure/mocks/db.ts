@@ -62,7 +62,7 @@ const bytesToHex = (bytes: Uint8Array) => Array.from(bytes, (b) => b.toString(16
 export const randomToken = (size = 32) => bytesToHex(crypto.getRandomValues(new Uint8Array(size)));
 
 export const hashPassword = async (password: string, saltHex: string): Promise<string> => {
-  const salt = Uint8Array.from(saltHex.match(/.{2}/g) ?? [], (h) => parseInt(h, 16));
+  const salt = Uint8Array.from(saltHex.match(/.{2}/g) ?? [], (h) => Number.parseInt(h, 16));
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
   const bits = await crypto.subtle.deriveBits(
     { name: "PBKDF2", hash: "SHA-256", salt, iterations: PBKDF2_ITERATIONS },
@@ -74,17 +74,20 @@ export const hashPassword = async (password: string, saltHex: string): Promise<s
 
 const seed = async (scenarioId: string): Promise<DbState> => {
   const users: UserRecord[] = [];
-  for (const user of SEED_USERS) {
-    const passwordSalt = randomToken(16);
-    users.push({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: "2026-01-10T10:00:00.000Z",
-      passwordSalt,
-      passwordHash: await hashPassword(user.password, passwordSalt),
-    });
-  }
+  const hashedUsers = await Promise.all(
+    SEED_USERS.map(async (user) => {
+      const passwordSalt = randomToken(16);
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: "2026-01-10T10:00:00.000Z",
+        passwordSalt,
+        passwordHash: await hashPassword(user.password, passwordSalt),
+      };
+    }),
+  );
+  users.push(...hashedUsers);
   return {
     scenarioId,
     counters: { order: 0, wallet: 10, user: 10, event: 0, guest: 0 },
@@ -107,7 +110,14 @@ const freshRuntime = (): Runtime => ({
 });
 
 let state: DbState | undefined;
-export let runtime: Runtime = freshRuntime();
+const runtimeRef: { current: Runtime } = { current: freshRuntime() };
+export const runtime: Runtime = new Proxy({} as Runtime, {
+  get: (_, prop) => runtimeRef.current[prop as keyof Runtime],
+  set: (_, prop, value) => {
+    runtimeRef.current[prop as keyof Runtime] = value;
+    return true;
+  },
+});
 
 const persist = () => {
   if (!state) return;
@@ -151,7 +161,7 @@ export const mutateDb = <T>(mutation: (db: DbState) => T): T => {
 
 export const resetDb = async (scenarioId?: string): Promise<DbState> => {
   state = await seed(findScenario(scenarioId ?? state?.scenarioId).id);
-  runtime = freshRuntime();
+  runtimeRef.current = freshRuntime();
   persist();
   return state;
 };
@@ -161,7 +171,7 @@ export const setScenario = (scenarioId: string) => {
   mutateDb((db) => {
     db.scenarioId = scenario.id;
   });
-  runtime = freshRuntime();
+  runtimeRef.current = freshRuntime();
   return scenario;
 };
 

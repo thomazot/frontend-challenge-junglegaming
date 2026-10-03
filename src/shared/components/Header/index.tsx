@@ -75,24 +75,32 @@ export function Header() {
       <div className="flex md:hidden mx-auto h-20 items-center px-4 gap-3">
         <HeaderMobileSearch />
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <button className="flex items-center justify-center bg-primary rounded-[10px] w-11 h-[45px] shrink-0 hover:bg-primary-dark transition-colors">
-              <Icon name="filter" set="curved" primaryColor="#1E120A" size={24} />
-              <span className="sr-only">Filtros</span>
-            </button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-72 sm:w-[350px] p-0 overflow-y-auto bg-background border-r-border/10">
-            <SheetTitle className="sr-only">Filtros do Catálogo</SheetTitle>
-            <div className="p-6 pb-20">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-heading font-bold text-primary">Filtros</h2>
-              </div>
-              <CatalogSidebar />
-            </div>
-          </SheetContent>
-        </Sheet>
+        <MobileFilterSheet />
       </div>
     </header>
+  );
+}
+
+function MobileFilterSheet() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <button className="flex items-center justify-center bg-primary rounded-xl w-11 h-11 shrink-0 hover:bg-primary-dark transition-colors">
+          <Icon name="filter" set="curved" primaryColor="#1E120A" size={24} />
+          <span className="sr-only">Filtros</span>
+        </button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-72 sm:w-87.5 p-0 overflow-y-auto bg-background border-r-border/10">
+        <SheetTitle className="sr-only">Filtros do Catálogo</SheetTitle>
+        <div className="p-6 pb-20">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-heading font-bold text-primary">Filtros</h2>
+          </div>
+          <CatalogSidebar onFilterSelect={() => setOpen(false)} />
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

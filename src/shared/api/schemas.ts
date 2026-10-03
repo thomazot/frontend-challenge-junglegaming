@@ -75,6 +75,7 @@ export const nftListParamsSchema = z.object({
   minPrice: ethSchema.optional(),
   maxPrice: ethSchema.optional(),
   sort: z.enum(["recent", "price-asc", "price-desc"]).optional(),
+  tab: z.enum(["todos", "novos", "alta"]).optional(),
   page: z.coerce.number().int().min(1).max(10_000).optional(),
   limit: z.coerce.number().int().min(1).max(48).optional(),
 });

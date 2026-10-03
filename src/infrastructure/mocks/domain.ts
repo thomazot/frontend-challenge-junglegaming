@@ -1,6 +1,6 @@
 import type { Cart, Nft, NftUpdatedEvent, Order, OrderUpdatedEvent, Quote, QuoteIssue, User } from "@/shared/api/contracts";
 import { addEth, compareEth, fromWei, mulEthInt, percentEth, subEth, toWei } from "@/shared/lib/eth";
-import { getDb, mutateDb, nextId, runtime, type CartRecord, type DbState, type OrderRecord, type UserRecord } from "./db";
+import { getDb, mutateDb, nextId, type CartRecord, type DbState, type OrderRecord, type UserRecord } from "./db";
 import { COUPONS } from "./fixtures/accounts";
 import { publishEvent } from "./events";
 import { ApiFailure, type RouteContext } from "./server";
@@ -14,10 +14,10 @@ export const publicUser = (user: UserRecord): User => ({
 });
 
 /* -------------------------------- Cookies -------------------------------- */
-export const cookieHeader = (name: string, value: string, maxAgeSeconds?: number) =>
-  // TODO(security): MSW cannot emit HttpOnly/Secure cookies in the browser. A real backend must set
-  // `__Host-sid` as HttpOnly; Secure; SameSite=Lax and keep the CSRF cookie readable by JS.
-  `${name}=${encodeURIComponent(value)}; Path=/; SameSite=Lax${maxAgeSeconds !== undefined ? `; Max-Age=${maxAgeSeconds}` : ""}`;
+export const cookieHeader = (name: string, value: string, maxAgeSeconds?: number) => {
+  const maxAge = maxAgeSeconds !== undefined ? `; Max-Age=${maxAgeSeconds}` : "";
+  return `${name}=${encodeURIComponent(value)}; Path=/; SameSite=Lax${maxAge}`;
+};
 
 /* --------------------------------- Cart ---------------------------------- */
 export const cartOwner = (ctx: RouteContext): { key: string; setCookie?: string } => {
@@ -62,7 +62,7 @@ export const mergeGuestCart = (guestKey: string, userKey: string) =>
 const hash = (value: string) => {
   let h = 0x811c9dc5;
   for (let i = 0; i < value.length; i++) {
-    h ^= value.charCodeAt(i);
+    h ^= value.codePointAt(i)!;
     h = Math.imul(h, 0x01000193);
   }
   return (h >>> 0).toString(16).padStart(8, "0");
@@ -114,7 +114,7 @@ export const computeQuote = (db: DbState, cart: CartRecord): Quote => {
   const validCoupon = coupon && Date.parse(coupon.expiresAt) > Date.now() ? coupon : undefined;
   const discount = validCoupon ? percentEth(subtotal, validCoupon.basisPoints) : "0";
   const base = subEth(subtotal, discount);
-  const fee = lines.length === 0 ? "0" : [percentEth(base, 100), MIN_FEE].reduce((a, b) => (compareEth(a, b) >= 0 ? a : b));
+  const fee = lines.length === 0 ? "0" : [percentEth(base, 100), MIN_FEE].reduce((a, b) => (compareEth(a, b) >= 0 ? a : b), "0");
   const total = addEth(base, fee);
 
   const id = hash(
@@ -184,7 +184,7 @@ export const ORDER_SETTLE_MS = 1500;
 export const settleOrder = (orderId: string) => {
   const settled = mutateDb((db) => {
     const order = db.orders.find((candidate) => candidate.id === orderId);
-    if (!order || order.status !== "pending") return undefined;
+    if (order?.status !== "pending") return undefined;
     const declined = db.scenarioId === "payment-declined";
     order.updatedAt = new Date().toISOString();
     order.version += 1;
@@ -238,4 +238,4 @@ export const settleIfDue = (order: OrderRecord) => {
   if (order.status === "pending" && Date.now() - Date.parse(order.createdAt) >= ORDER_SETTLE_MS) settleOrder(order.id);
 };
 
-export { runtime };
+export { runtime } from "./db";

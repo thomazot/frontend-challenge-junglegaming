@@ -6,8 +6,8 @@ import { ApiFailure, ok, parse, route } from "../server";
 
 const DEFAULT_LIMIT = 9;
 
-const countBy = (items: Nft[], pick: (nft: Nft) => string): FacetCount[] => {
-  const counts = new Map<string, number>();
+const countBy = (items: Nft[], pick: (nft: Nft) => string, allLabels: string[]): FacetCount[] => {
+  const counts = new Map<string, number>(allLabels.map((label) => [label, 0]));
   for (const item of items) counts.set(pick(item), (counts.get(pick(item)) ?? 0) + 1);
   return [...counts].map(([label, count]) => ({ label, count })).sort((a, b) => a.label.localeCompare(b.label, "pt-BR"));
 };
@@ -26,7 +26,13 @@ export const catalogHandlers = [
       (!params.maxPrice || compareEth(nft.price, params.maxPrice) <= 0);
 
     const base = all.filter(matchesBase);
-    const filtered = base.filter(
+    const byTab =
+      params.tab === "novos"
+        ? base.filter((nft) => nft.tags.includes("new"))
+        : params.tab === "alta"
+          ? base.filter((nft) => nft.tags.includes("trending"))
+          : base;
+    const filtered = byTab.filter(
       (nft) =>
         (!params.collection?.length || params.collection.includes(nft.collection)) &&
         (!params.network?.length || params.network.includes(nft.network)),
@@ -49,8 +55,16 @@ export const catalogHandlers = [
       data: sorted.slice((page - 1) * limit, page * limit),
       meta: { total, page, limit, totalPages },
       facets: {
-        collections: countBy(base.filter((nft) => !params.network?.length || params.network.includes(nft.network)), (nft) => nft.collection),
-        networks: countBy(base.filter((nft) => !params.collection?.length || params.collection.includes(nft.collection)), (nft) => nft.network),
+        collections: countBy(
+          base.filter((nft) => !params.network?.length || params.network.includes(nft.network)),
+          (nft) => nft.collection,
+          [...new Set(ctx.db.nfts.map((nft) => nft.collection))],
+        ),
+        networks: countBy(
+          base.filter((nft) => !params.collection?.length || params.collection.includes(nft.collection)),
+          (nft) => nft.network,
+          [...new Set(ctx.db.nfts.map((nft) => nft.network))],
+        ),
         priceRange: { min: prices[0] ?? "0", max: prices[prices.length - 1] ?? "0" },
       },
     };
