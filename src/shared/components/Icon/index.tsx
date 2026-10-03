@@ -24,14 +24,14 @@ const svgModules = import.meta.glob('../../../assets/icons/*.svg', {
   import: 'default'
 });
 
-export function Icon({ name, className, set = "bold", size }: Readonly<IconProps>) {
+export function Icon({ name, className, set = "bold", size = 24, primaryColor }: Readonly<IconProps>) {
   const fileName = name === "filter" && set === "bold" ? "filter-bold" : name;
-  const SvgComponent = svgModules[`../../../assets/icons/${fileName}.svg`] as React.ComponentType<{ className?: string; width?: number | string; height?: number | string }>;
+  const SvgComponent = svgModules[`../../../assets/icons/${fileName}.svg`] as React.ComponentType<{ className?: string; width?: number | string; height?: number | string; style?: React.CSSProperties }>;
   if (!SvgComponent) return null;
 
   return (
     <Suspense fallback={<div className={cn("size-6 bg-muted animate-pulse rounded-full inline-block", className)} />}>
-      <SvgComponent className={className} width={size} height={size} />
+      <SvgComponent className={className} width={size} height={size} style={primaryColor ? { color: primaryColor } : undefined} />
     </Suspense>
   );
 }
