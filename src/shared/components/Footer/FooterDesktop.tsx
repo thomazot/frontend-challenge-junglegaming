@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/button";
 
 export function FooterDesktop() {
   return (
-    <>
+    <div>
       <footer className="w-full bg-surface-card text-foreground font-mono relative z-10 max-w-300 mx-auto">
         {/* Top Features Section */}
         <div className="w-full border-b border-surface-dark">
@@ -108,6 +108,6 @@ export function FooterDesktop() {
           <p>© 2026 Kurio. Propriedade digital para todos.</p>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -9,7 +9,7 @@ export type NameIcons =
   'footer-notch' | 'jungle-logo' |
   'home' | 'heart' | 'user' | 'buy' |
   'logout' | 'filter' |
-  'cart-solid' | 'filter-header';
+  'cart-solid' | 'filter-header' | 'arrow-right';
 
 export type IconProps = {
   name: NameIcons;

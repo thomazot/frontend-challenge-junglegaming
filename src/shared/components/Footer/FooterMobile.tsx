@@ -4,7 +4,7 @@ import { Icon } from "@/shared/components/Icon";
 
 export function FooterMobile() {
   return (
-    <footer className="left-0 w-full z-50 px-4 pb-6 sticky bottom-0">
+    <footer className="fixed bottom-0 left-0 w-full z-50 px-4 pb-0">
       <div className="relative w-full h-23.75">
 
         {/* Flawless SVG Background Layer from Figma */}

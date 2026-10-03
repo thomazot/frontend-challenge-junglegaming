@@ -21,7 +21,7 @@ export function Header() {
   ];
 
   return (
-    <header className="max-w-300 sticky top-0 z-50 w-full border-b border-border bg-background mx-auto">
+    <header className="max-w-300 sticky top-0 z-50 w-full border-b-0 md:border-b border-border bg-background mx-auto">
       {/* --- DESKTOP HEADER --- */}
       <div className="mx-auto hidden md:flex h-20 items-center justify-between px-8 relative">
         {/* Logo */}

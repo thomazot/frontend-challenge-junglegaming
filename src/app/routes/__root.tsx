@@ -14,7 +14,7 @@ function RootComponent() {
   const routerState = useRouterState();
   const isHome = routerState.location.pathname === '/';
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col gap-8">
+    <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col gap-4 md:gap-8">
       <Header />
 
       {isHome && <HeroBanner />}
