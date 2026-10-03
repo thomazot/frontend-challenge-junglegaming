@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -8,49 +7,40 @@ import {
   PaginationPrevious,
 } from "@/shared/ui/pagination";
 
-export function CatalogPagination() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 4;
+interface CatalogPaginationProps {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
 
-  const handlePageChange = (page: number, e: React.MouseEvent) => {
+export function CatalogPagination({ page, totalPages, onPageChange }: CatalogPaginationProps) {
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const handlePageChange = (target: number, e: React.MouseEvent) => {
     e.preventDefault();
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (target >= 1 && target <= totalPages) onPageChange(target);
   };
 
   return (
     <Pagination className="justify-end w-auto mx-0">
       <PaginationContent>
-        {currentPage > 1 && (
+        {page > 1 && (
           <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              aria-label="Página anterior"
-              onClick={(e) => handlePageChange(currentPage - 1, e)}
-            />
+            <PaginationPrevious href="#" aria-label="Página anterior" onClick={(e) => handlePageChange(page - 1, e)} />
           </PaginationItem>
         )}
 
-        {[1, 2, 3, 4].map((page) => (
-          <PaginationItem key={page}>
-            <PaginationLink
-              href="#"
-              isActive={currentPage === page}
-              onClick={(e) => handlePageChange(page, e)}
-            >
-              {page}
+        {pages.map((target) => (
+          <PaginationItem key={target}>
+            <PaginationLink href="#" isActive={page === target} onClick={(e) => handlePageChange(target, e)}>
+              {target}
             </PaginationLink>
           </PaginationItem>
         ))}
 
-        {currentPage < totalPages && (
+        {page < totalPages && (
           <PaginationItem>
-            <PaginationNext
-              href="#"
-              aria-label="Próxima página"
-              onClick={(e) => handlePageChange(currentPage + 1, e)}
-            />
+            <PaginationNext href="#" aria-label="Próxima página" onClick={(e) => handlePageChange(page + 1, e)} />
           </PaginationItem>
         )}
       </PaginationContent>

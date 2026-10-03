@@ -1,7 +1,6 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useRouterState } from '@tanstack/react-router';
 import { Header } from '@/shared/components/Header';
 
 import { Footer } from '@/shared/components/Footer';
@@ -11,8 +10,6 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const routerState = useRouterState();
-  const isHome = routerState.location.pathname === '/';
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col gap-4 md:gap-8">
       <Header />
@@ -26,7 +23,7 @@ function RootComponent() {
       <Footer />
 
       {/* Devtools visíveis apenas no ambiente de desenvolvimento */}
-      {process.env.NODE_ENV === "development" && (
+      {import.meta.env.DEV && (
         <>
           <TanStackRouterDevtools position="bottom-right" />
           <ReactQueryDevtools buttonPosition="bottom-left" />

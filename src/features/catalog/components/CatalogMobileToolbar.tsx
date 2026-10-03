@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@/shared/components/Icon";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/shared/ui/sheet";
-import { CatalogSidebar } from "../CatalogSidebar";
+import { CatalogSidebar } from "./CatalogSidebar";
 
 export function CatalogMobileToolbar() {
   const [open, setOpen] = useState(false);

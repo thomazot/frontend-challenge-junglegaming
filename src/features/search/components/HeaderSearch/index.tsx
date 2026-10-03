@@ -3,6 +3,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { cva } from "class-variance-authority";
 import { Icon } from "@/shared/components/Icon";
+import { useCatalogSearch } from "@/features/catalog/hooks/use-catalog-search";
 
 const headerSearchVariants = {
   container: cva(
@@ -44,6 +45,7 @@ type HeaderSearchProps = {
 
 export function HeaderSearch({ isExpanded = false, setIsExpanded }: Readonly<HeaderSearchProps>) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { value, setValue } = useCatalogSearch();
 
   useEffect(() => {
     if (isExpanded && inputRef.current) {
@@ -58,6 +60,8 @@ export function HeaderSearch({ isExpanded = false, setIsExpanded }: Readonly<Hea
         type="search"
         placeholder="Explorar coleções"
         aria-label="Explorar coleções"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         className={headerSearchVariants.input({ isExpanded })}
         onBlur={(e) => {
           if (!e.target.value) {

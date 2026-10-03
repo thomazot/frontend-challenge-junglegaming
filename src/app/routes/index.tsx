@@ -1,6 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { listNfts } from '@/infrastructure/http';
+import { nftListParamsSchema } from '@/shared/api/schemas';
 import { HeroBanner } from '@/features/banners/components/HeroBanner';
 import { CatalogLayout } from '@/features/catalog/layouts/CatalogLayout';
 import { CatalogSidebar } from '@/features/catalog/components/CatalogSidebar';
@@ -9,13 +10,19 @@ import { CatalogGrid } from '@/features/catalog/components/CatalogGrid';
 import { CatalogPagination } from '@/features/catalog/components/CatalogPagination';
 
 export const Route = createFileRoute('/')({
+  // URL is the single source of truth for catalog state (survives refresh/history).
+  validateSearch: (search) => nftListParamsSchema.parse(search),
   component: HomePage,
 });
 
 function HomePage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['nfts', { page: 1 }],
-    queryFn: ({ signal }) => listNfts({ page: 1 }, signal),
+  const params = Route.useSearch();
+  const navigate = useNavigate({ from: '/' });
+  const { data, isPending, isError, refetch } = useQuery({
+    queryKey: ['nfts', params],
+    queryFn: ({ signal }) => listNfts(params, signal),
+    // Keep the previous grid while the next page/filter loads (no layout jump).
+    placeholderData: keepPreviousData,
   });
 
   return (
@@ -25,16 +32,31 @@ function HomePage() {
 
       <div className='px-6 py-8 md:py-0 md:px-8 xl:px-0'>
         <CatalogLayout
-          sidebar={<CatalogSidebar />}
-          header={<CatalogHeader />}
+          sidebar={<CatalogSidebar facets={data?.facets} />}
+          header={<CatalogHeader sort={params.sort} />}
           content={
-            isLoading ? (
+            isPending ? (
               <div className="py-20 flex justify-center text-primary font-mono animate-pulse">Carregando NFTs...</div>
+            ) : isError ? (
+              <div className="py-20 flex flex-col items-center gap-4 text-center">
+                <p className="text-muted-foreground">Não foi possível carregar o catálogo.</p>
+                <button onClick={() => refetch()} className="font-mono text-primary underline">
+                  Tentar novamente
+                </button>
+              </div>
             ) : (
-              <CatalogGrid items={data?.data || []} />
+              <CatalogGrid items={data.data} />
             )
           }
-          pagination={<CatalogPagination />}
+          pagination={
+            data && data.meta.totalPages > 1 ? (
+              <CatalogPagination
+                page={data.meta.page}
+                totalPages={data.meta.totalPages}
+                onPageChange={(page) => navigate({ search: (prev) => ({ ...prev, page }), replace: true })}
+              />
+            ) : undefined
+          }
         />
       </div>
     </div>
