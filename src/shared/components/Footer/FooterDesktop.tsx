@@ -1,4 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import { SocialLinks } from "@/shared/components/SocialLinks";
+import { CompatibleWallets } from "@/shared/components/CompatibleWallets";
+import { ContactInfo } from "@/shared/components/ContactInfo";
 import { Button } from "@/shared/ui/button";
 
 export function FooterDesktop() {
@@ -55,8 +58,7 @@ export function FooterDesktop() {
         <div className="mx-auto px-8 py-6 flex items-center justify-between text-[14px]">
           <span className="font-bold tracking-widest uppercase">KURIO</span>
           <span className="text-foreground leading-relaxed">Feito para colecionadores,<br />criadores e cultura</span>
-          <span className="text-foreground">contato@email.com</span>
-          <span className="text-foreground">+55 11 4002 8922</span>
+          <ContactInfo asWrapper={false} />
         </div>
       </div>
 
@@ -93,32 +95,8 @@ export function FooterDesktop() {
 
           {/* Socials & Wallets */}
           <div className="flex flex-col gap-10">
-            <div className="flex flex-col gap-4">
-              <h4 className="font-bold text-[18px]">Redes sociais</h4>
-              <div className="flex gap-3 flex-wrap">
-                <a href="#" className="w-10 h-10 rounded border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-surface-card transition-colors">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z" /></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-surface-card transition-colors">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-surface-card transition-colors">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" /></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-surface-card transition-colors">
-                  <span className="font-bold text-[18px]">in</span>
-                </a>
-                <a href="#" className="w-10 h-10 rounded border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-surface-card transition-colors">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="4" /><circle cx="12" cy="12" r="2" /></svg>
-                </a>
-              </div>
-            </div>
-            <div className="flex flex-col gap-4">
-              <h4 className="font-bold text-[18px]">Carteiras compatíveis</h4>
-              <div className="bg-surface-dark border border-border-soft rounded-lg px-4 py-2 text-[10px] tracking-widest flex items-center gap-3 w-fit">
-                <span className="text-text-accent font-bold">METAMASK</span> • <span className="text-text-accent font-bold">WALLETCONNECT</span> • <span className="text-text-accent font-bold">COINBASE</span>
-              </div>
-            </div>
+            <SocialLinks variant="desktop" />
+            <CompatibleWallets variant="desktop" />
           </div>
         </div>
       </div>
