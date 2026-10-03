@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Logo } from "@/shared/components/Logo";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Icon } from "@/shared/components/Icon";
 import { Button } from "@/shared/ui/button";
 import { HeaderSearch } from "@/features/search/components/HeaderSearch";

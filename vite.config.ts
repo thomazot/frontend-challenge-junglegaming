@@ -14,24 +14,12 @@ export default defineConfig({
     TanStackRouterVite({
       routesDirectory: "./src/app/routes",
       generatedRouteTree: "./src/app/router/routeTree.gen.ts",
+      autoCodeSplitting: true,
     }),
     react(),
     svgr()
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('framer-motion')) return 'framer-motion';
-            if (id.includes('@tanstack')) return 'router';
-            if (id.includes('react')) return 'vendor';
-            return 'vendor';
-          }
-        }
-      }
-    }
-  },
+  
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),

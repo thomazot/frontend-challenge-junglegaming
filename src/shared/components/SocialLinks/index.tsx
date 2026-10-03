@@ -41,7 +41,7 @@ export function SocialLinks({ variant = "desktop", className }: { variant?: "des
       <h4 className={cn("font-bold text-foreground", isMobile ? "text-[14px]" : "text-[18px]")}>Redes sociais</h4>
       <div className="flex gap-3 flex-wrap">
         {SOCIAL_DATA.map((social, index) => (
-          <a key={index} href={social.href} className={linkClass}>
+          <a key={index} href={social.href} className={linkClass} aria-label={social.label}>
             <Icon name={social.name} className={isMobile ? "size-3" : "size-5"} />
           </a>
         ))}

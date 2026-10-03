@@ -44,7 +44,7 @@ export function FooterDesktop() {
             <div className="flex flex-[0_1_357px] flex-col gap-3 px-4">
               <span className="text-[18px] font-bold leading-tight">Antecipe-se ao próximo<br />lançamento</span>
               <div className="flex w-full h-10 items-center justify-between rounded-[6px] bg-surface-dark pl-3 shadow-[0_0_20px_0_rgba(10,6,4,0.45)]">
-                <input type="email" placeholder="digite seu e-mail..." className="bg-transparent border-none outline-none text-foreground placeholder:text-secondary text-[14px] w-full h-full" />
+                <input type="email" aria-label="E-mail" placeholder="digite seu e-mail..." className="bg-transparent border-none outline-none text-foreground placeholder:text-secondary text-[14px] w-full h-full" />
                 <Button className="h-full rounded-l-none rounded-r-[6px] bg-primary text-ink hover:bg-primary/90 font-bold px-6 text-[14px]">Enviar</Button>
               </div>
               <p className="text-[13px] text-text-secondary leading-relaxed">

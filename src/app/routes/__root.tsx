@@ -13,7 +13,7 @@ function RootComponent() {
     <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col">
       <Header />
 
-      <main className="flex-1 container mx-auto px-4 md:px-8 py-6 max-w-300 mx-auto">
+      <main className="flex-1 container mx-auto px-4 md:px-8 py-6 max-w-300">
         <Outlet />
       </main>
 

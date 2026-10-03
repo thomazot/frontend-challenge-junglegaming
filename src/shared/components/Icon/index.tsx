@@ -1,6 +1,6 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { cn } from "@/shared/utils/utils";
-import * as Iconly from "react-iconly";
+import { Home, Heart, User, Logout, Filter } from "react-iconly";
 
 export type NameIcons =
   'search' | 'search-mobile' |
@@ -20,12 +20,18 @@ export type IconProps = {
 };
 
 const iconlyMap = {
-  home: Iconly.Home,
-  heart: Iconly.Heart,
-  user: Iconly.User,
-  logout: Iconly.Logout,
-  filter: Iconly.Filter,
+  home: Home,
+  heart: Heart,
+  user: User,
+  logout: Logout,
+  filter: Filter,
 };
+
+const svgModules = import.meta.glob('../../../assets/icons/*.svg', {
+  eager: true,
+  query: '?react',
+  import: 'default'
+});
 
 export function Icon({ name, className, set = "bold", size, primaryColor = "currentColor" }: Readonly<IconProps>) {
   if (name in iconlyMap) {
@@ -34,7 +40,8 @@ export function Icon({ name, className, set = "bold", size, primaryColor = "curr
     return <IconlyComponent set={set} size={size} primaryColor={primaryColor} className={className} />;
   }
 
-  const SvgComponent = lazy(() => import(`../../../assets/icons/${name}.svg?react`));
+  const SvgComponent = svgModules[`../../../assets/icons/${name}.svg`] as React.ComponentType<{ className?: string }>;
+  if (!SvgComponent) return null;
 
   return (
     <Suspense fallback={<div className={cn("size-6 bg-muted animate-pulse rounded-full inline-block", className)} />}>

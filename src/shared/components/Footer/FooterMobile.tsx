@@ -26,20 +26,20 @@ export function FooterMobile() {
         <div className="absolute inset-0 flex z-10">
           {/* Left Icons */}
           <div className="flex flex-1 items-center justify-evenly pr-6 pl-2">
-            <Link to="/" className="text-secondary">
+            <Link to="/" className="text-secondary" aria-label="Home">
               <Icon name="home" set="bold" size={20} />
             </Link>
-            <Link to="/" className="text-primary hover:text-primary transition-colors">
+            <Link to="/" className="text-primary hover:text-primary transition-colors" aria-label="Favoritos">
               <Icon name="heart" set="bold" size={20} />
             </Link>
           </div>
 
           {/* Right Icons */}
           <div className="flex flex-1 items-center justify-evenly pl-6 pr-2">
-            <Link to="/" className="text-secondary hover:text-primary transition-colors">
+            <Link to="/" className="text-secondary hover:text-primary transition-colors" aria-label="Carrinho">
               <Icon name="cart-solid" className="size-5" />
             </Link>
-            <Link to="/" className="text-secondary hover:text-primary transition-colors">
+            <Link to="/" className="text-secondary hover:text-primary transition-colors" aria-label="Carrinho">
               <Icon name="user" set="bold" size={20} />
             </Link>
           </div>
@@ -49,7 +49,7 @@ export function FooterMobile() {
         <div className="absolute left-1/2 -translate-x-1/2 -top-8 flex items-center justify-center w-16.25 h-16.25 z-20 cursor-pointer">
 
           <HeaderCategories>
-            <div className="relative w-full h-full flex items-center justify-center cursor-pointer">
+            <button aria-label="Abrir Menu de Categorias" className="appearance-none bg-transparent border-none outline-none relative w-full h-full flex items-center justify-center cursor-pointer">
               {/* O Círculo de Fundo (com o gradiente e a opacidade) */}
               <div
                 className="absolute inset-0 rounded-full"
@@ -60,7 +60,7 @@ export function FooterMobile() {
               <div className="relative z-10 text-white">
                 <Icon name="jungle-logo" />
               </div>
-            </div>
+            </button>
           </HeaderCategories>
 
         </div>
