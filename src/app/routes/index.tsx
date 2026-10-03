@@ -6,9 +6,11 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-heading text-primary">Catálogo de NFTs</h1>
-      <p className="text-muted-foreground">O catálogo será implementado aqui.</p>
+    <div className="flex flex-col w-full">
+      <div className="flex flex-col gap-6 p-8">
+        <h2 className="text-3xl font-heading text-primary">Catálogo de NFTs</h2>
+        <p className="text-muted-foreground">O catálogo será implementado aqui.</p>
+      </div>
     </div>
   );
 }
