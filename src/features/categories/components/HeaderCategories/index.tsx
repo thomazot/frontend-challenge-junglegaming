@@ -24,13 +24,13 @@ export function HeaderCategories({ children }: HeaderCategoriesProps) {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="left" className="w-[280px] sm:w-[320px] p-0 border-r border-border/30 bg-background shadow-2xl flex flex-col h-full">
+      <SheetContent side="left" className="w-70 sm:w-[320px] p-0 border-r border-border/30 bg-background shadow-2xl flex flex-col h-full">
         <SheetHeader className="px-8 pt-8 pb-6 border-b border-border/10 shrink-0">
           <SheetTitle className="text-left">
             <Logo />
           </SheetTitle>
         </SheetHeader>
-        
+
         <div className="flex-1 overflow-y-auto">
           <div className="flex flex-col py-6 px-4 gap-1">
             {CATEGORIES.map((category, index) => (

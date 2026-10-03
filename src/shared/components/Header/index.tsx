@@ -31,7 +31,7 @@ export function Header() {
 
         {/* Navigation Centered */}
         {!isSearchExpanded && (
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-8 h-full">
             {links.map((link) => {
               const isActive = location.pathname === link.to;
               return (
