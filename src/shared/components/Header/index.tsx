@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Logo } from "@/shared/components/Logo";
-import { motion } from "framer-motion";
 import { Icon } from "@/shared/components/Icon";
 import { Button } from "@/shared/ui/button";
 import { HeaderSearch } from "@/features/search/components/HeaderSearch";
 import { HeaderCart } from "@/features/cart/components/HeaderCart";
 import { HeaderMobileSearch } from "@/features/search/components/HeaderMobileSearch";
 import { cn } from "cn";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/shared/ui/sheet";
+import { CatalogSidebar } from "@/features/catalog/components/CatalogSidebar";
 
 export function Header() {
   const location = useLocation();
@@ -45,8 +46,7 @@ export function Header() {
                 >
                   {link.label}
                   {isActive && (
-                    <motion.div
-                      layoutId="desktop-nav-underline"
+                    <div
                       className="absolute bottom-0 left-0 h-0.75 w-full bg-primary"
                     />
                   )}
@@ -75,10 +75,23 @@ export function Header() {
       <div className="flex md:hidden mx-auto h-20 items-center px-4 gap-3">
         <HeaderMobileSearch />
 
-        <Button variant="gradient" size="mobileIcon">
-          <Icon name="filter" set="curved" primaryColor="currentColor" size={24} />
-          <span className="sr-only">Filtros</span>
-        </Button>
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className="flex items-center justify-center bg-primary rounded-[10px] w-11 h-[45px] shrink-0 hover:bg-primary-dark transition-colors">
+              <Icon name="filter" set="curved" primaryColor="#1E120A" size={24} />
+              <span className="sr-only">Filtros</span>
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 sm:w-[350px] p-0 overflow-y-auto bg-background border-r-border/10">
+            <SheetTitle className="sr-only">Filtros do Catálogo</SheetTitle>
+            <div className="p-6 pb-20">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-heading font-bold text-primary">Filtros</h2>
+              </div>
+              <CatalogSidebar />
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

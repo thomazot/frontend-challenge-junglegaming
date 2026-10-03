@@ -5,7 +5,7 @@ export function CompatibleWallets({ variant = "desktop", className }: { variant?
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <h4 className={cn("font-bold text-foreground", isMobile ? "text-[14px]" : "text-[18px]")}>
+      <h4 className={cn("font-bold text-foreground", isMobile ? "text-sm" : "text-lg")}>
         {isMobile ? "Carteiras" : "Carteiras compatíveis"}
       </h4>
       <div className={cn(

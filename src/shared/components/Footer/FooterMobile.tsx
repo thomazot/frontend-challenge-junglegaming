@@ -26,20 +26,20 @@ export function FooterMobile() {
         <div className="absolute inset-0 flex z-10">
           {/* Left Icons */}
           <div className="flex flex-1 items-center justify-evenly pr-6 pl-2">
-            <Link to="/" className="text-secondary" aria-label="Home">
+            <Link to="/" className="p-1.5 text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="Home">
               <Icon name="home" set="bold" size={20} />
             </Link>
-            <Link to="/" className="text-primary hover:text-primary transition-colors" aria-label="Favoritos">
+            <Link to="/" className="p-1.5 text-primary hover:text-primary transition-colors flex items-center justify-center" aria-label="Favoritos">
               <Icon name="heart" set="bold" size={20} />
             </Link>
           </div>
 
           {/* Right Icons */}
           <div className="flex flex-1 items-center justify-evenly pl-6 pr-2">
-            <Link to="/" className="text-secondary hover:text-primary transition-colors" aria-label="Carrinho">
+            <Link to="/" className="p-1.5 text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="Carrinho">
               <Icon name="cart-solid" className="size-5" />
             </Link>
-            <Link to="/" className="text-secondary hover:text-primary transition-colors" aria-label="Carrinho">
+            <Link to="/" className="p-1.5 text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="Carrinho">
               <Icon name="user" set="bold" size={20} />
             </Link>
           </div>

@@ -1,0 +1,284 @@
+[
+  {
+    "id": "1",
+    "name": "Emerald Ape #042",
+    "price": 1.19,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Ethereum"
+  },
+  {
+    "id": "2",
+    "name": "Sage Nomad #009",
+    "price": 1.69,
+    "badge": "NFT Artwork 04",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Polygon"
+  },
+  {
+    "id": "3",
+    "name": "Neon Vessel #552",
+    "price": 1.99,
+    "oldPrice": 2.29,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte 3D",
+    "network": "Solana"
+  },
+  {
+    "id": "4",
+    "name": "Cosmic Bloom #118",
+    "price": 1.29,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Ethereum"
+  },
+  {
+    "id": "5",
+    "name": "Violet Nomad #314",
+    "price": 1.39,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Polygon"
+  },
+  {
+    "id": "6",
+    "name": "Ivory Baron #088",
+    "price": 1.79,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Música",
+    "network": "Ethereum"
+  },
+  {
+    "id": "7",
+    "name": "Golden Beat #207",
+    "price": 0.99,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Solana"
+  },
+  {
+    "id": "8",
+    "name": "Bronze Tempo #012",
+    "price": 0.89,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Generativa",
+    "network": "Polygon"
+  },
+  {
+    "id": "9",
+    "name": "Golden Signal #160",
+    "price": 0.39,
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Jogos",
+    "network": "Ethereum"
+  },
+  {
+    "id": "10",
+    "name": "Ape Variant #110",
+    "price": "0.33",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Polygon"
+  },
+  {
+    "id": "11",
+    "name": "Ape Variant #111",
+    "price": "1.44",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Ethereum"
+  },
+  {
+    "id": "12",
+    "name": "Ape Variant #112",
+    "price": "1.18",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Polygon"
+  },
+  {
+    "id": "13",
+    "name": "Ape Variant #113",
+    "price": "1.34",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Ethereum"
+  },
+  {
+    "id": "14",
+    "name": "Ape Variant #114",
+    "price": "1.33",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Ethereum"
+  },
+  {
+    "id": "15",
+    "name": "Ape Variant #115",
+    "price": "1.63",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Polygon"
+  },
+  {
+    "id": "16",
+    "name": "Ape Variant #116",
+    "price": "1.58",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Solana"
+  },
+  {
+    "id": "17",
+    "name": "Ape Variant #117",
+    "price": "1.56",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Polygon"
+  },
+  {
+    "id": "18",
+    "name": "Ape Variant #118",
+    "price": "1.44",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Polygon"
+  },
+  {
+    "id": "19",
+    "name": "Ape Variant #119",
+    "price": "1.57",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Solana"
+  },
+  {
+    "id": "20",
+    "name": "Ape Variant #120",
+    "price": "0.27",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Solana"
+  },
+  {
+    "id": "21",
+    "name": "Ape Variant #121",
+    "price": "0.18",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Solana"
+  },
+  {
+    "id": "22",
+    "name": "Ape Variant #122",
+    "price": "1.53",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Ethereum"
+  },
+  {
+    "id": "23",
+    "name": "Ape Variant #123",
+    "price": "0.78",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Solana"
+  },
+  {
+    "id": "24",
+    "name": "Ape Variant #124",
+    "price": "1.61",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Solana"
+  },
+  {
+    "id": "25",
+    "name": "Ape Variant #125",
+    "price": "0.15",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Ethereum"
+  },
+  {
+    "id": "26",
+    "name": "Ape Variant #126",
+    "price": "1.92",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Solana"
+  },
+  {
+    "id": "27",
+    "name": "Ape Variant #127",
+    "price": "1.57",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Ethereum"
+  },
+  {
+    "id": "28",
+    "name": "Ape Variant #128",
+    "price": "0.86",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Ethereum"
+  },
+  {
+    "id": "29",
+    "name": "Ape Variant #129",
+    "price": "1.12",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Colecionáveis",
+    "network": "Ethereum"
+  },
+  {
+    "id": "30",
+    "name": "Ape Variant #130",
+    "price": "1.68",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Ethereum"
+  },
+  {
+    "id": "31",
+    "name": "Ape Variant #131",
+    "price": "1.10",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Solana"
+  },
+  {
+    "id": "32",
+    "name": "Ape Variant #132",
+    "price": "0.91",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Ethereum"
+  },
+  {
+    "id": "33",
+    "name": "Ape Variant #133",
+    "price": "1.91",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Ethereum"
+  },
+  {
+    "id": "34",
+    "name": "Ape Variant #134",
+    "price": "1.05",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Arte digital",
+    "network": "Ethereum"
+  },
+  {
+    "id": "35",
+    "name": "Ape Variant #135",
+    "price": "0.61",
+    "image": "/images/monkey-nft.jpg",
+    "collection": "Fotografia",
+    "network": "Ethereum"
+  }
+]
