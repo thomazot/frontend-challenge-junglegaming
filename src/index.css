@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "@fontsource-variable/geist";
+@import "./styles/tokens.css";
 
 @plugin "tailwindcss-animate";
 @custom-variant dark (&:is(.dark *));
@@ -9,33 +10,31 @@
   --font-sans: 'Roboto Mono', monospace;
   --font-heading: 'Roboto Mono', monospace;
 
-  --color-background: #140d0a;
-  --color-foreground: #f5f1eb;
 
-  --color-card: #241612;
-  --color-card-foreground: #f5f1eb;
+  /* Fallbacks & Defaults for Shadcn/UI (mapped to Figma tokens) */
+  --color-background: var(--color-ink);
+  --color-card: var(--color-surface-card);
+  --color-card-foreground: var(--color-foreground);
 
-  --color-popover: #241612;
-  --color-popover-foreground: #f5f1eb;
+  --color-popover: var(--color-surface-card);
+  --color-popover-foreground: var(--color-foreground);
 
-  --color-primary: #e89b55;
-  --color-primary-foreground: #140d0a;
+  --color-primary-foreground: var(--color-ink);
 
-  --color-secondary: #38220f;
-  --color-secondary-foreground: #f5f1eb;
+  --color-secondary-foreground: var(--color-foreground);
 
-  --color-muted: #2f1d15;
-  --color-muted-foreground: #cfb28c;
+  --color-muted: var(--color-surface-dark);
+  --color-muted-foreground: var(--color-text-secondary);
 
-  --color-accent: #38220f;
-  --color-accent-foreground: #f5f1eb;
+  --color-accent: var(--color-surface-dark);
+  --color-accent-foreground: var(--color-foreground);
 
-  --color-destructive: #f0805f;
-  --color-destructive-foreground: #f5f1eb;
+  --color-destructive: var(--color-error);
+  --color-destructive-foreground: var(--color-white);
 
-  --color-border: #38220f;
-  --color-input: #38220f;
-  --color-ring: #e89b55;
+  --color-border: var(--color-border-soft);
+  --color-input: var(--color-border-soft);
+  --color-ring: var(--color-primary);
 
   --radius-sm: 0.3rem;
   --radius-md: 0.5rem;

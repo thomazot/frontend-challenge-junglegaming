@@ -16,9 +16,9 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+    <header className="max-w-300 sticky top-0 z-50 w-full border-b border-border bg-background mx-auto">
       {/* --- DESKTOP HEADER --- */}
-      <div className="container mx-auto hidden md:flex h-20 items-center justify-between px-8">
+      <div className="mx-auto hidden md:flex h-20 items-center justify-between px-8">
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <span className="font-bold text-xl tracking-widest text-foreground uppercase font-mono">
@@ -76,7 +76,7 @@ export function Header() {
       </div>
 
       {/* --- MOBILE HEADER --- */}
-      <div className="flex md:hidden container mx-auto h-20 items-center px-4 gap-3">
+      <div className="flex md:hidden mx-auto h-20 items-center px-4 gap-3">
         <div className="flex flex-1 items-center gap-3 bg-card rounded-[10px] px-4 h-11.25 text-muted-foreground">
           <Search set="curved" primaryColor="currentColor" size={24} />
           <Input

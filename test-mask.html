@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Mask</title>
+<style>
+  body { background: #eee; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+  .footer {
+    width: 375px;
+    height: 72px;
+    background: #fff;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    -webkit-mask-image: 
+      radial-gradient(circle at calc(50% - 52px) -6px, black 16px, transparent 17px),
+      radial-gradient(circle at calc(50% + 52px) -6px, black 16px, transparent 17px),
+      radial-gradient(circle at 50% 12px, transparent 42px, black 43px);
+    -webkit-mask-composite: destination-out, destination-out, source-over;
+    mask-image: 
+      radial-gradient(circle at calc(50% - 52px) -6px, black 16px, transparent 17px),
+      radial-gradient(circle at calc(50% + 52px) -6px, black 16px, transparent 17px),
+      radial-gradient(circle at 50% 12px, transparent 42px, black 43px);
+    mask-composite: subtract, subtract, add;
+  }
+</style>
+</head>
+<body>
+  <div class="footer"></div>
+</body>
+</html>

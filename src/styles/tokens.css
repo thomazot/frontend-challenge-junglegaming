@@ -1,0 +1,39 @@
+/* 
+  AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY. 
+  To update colors, replace src/tokens.json and run 'pnpm generate:tokens'
+*/
+@theme inline {
+  --color-primary: #D28A4C;
+  --color-primary-light: #DD9A5F;
+  --color-primary-dark: #C47B3E;
+  --color-amber: #E3A44E;
+  --color-text-coral: #F0805F;
+  --color-foreground: #F5F1EB;
+  --color-background-elevated: #FBFBFB;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-secondary: #B39463;
+  --color-text-muted: #B0916A;
+  --color-surface-card: #241612;
+  --color-surface-raised: #2F1D15;
+  --color-ink: #140D0A;
+  --color-ink-deep: #0E0907;
+  --color-ink-soft: #1C110C;
+  --color-surface-dark: #38220F;
+  --color-border: #3F2319;
+  --color-border-soft: #55321F;
+  --color-gray-light: #EDEDED;
+  --color-success: #00A66C;
+  --color-error: #ED1B2E;
+  --color-text-primary: #F7F3EC;
+  --color-text-secondary: #CFB28C;
+  --color-text-accent: #E89B55;
+  --color-logo-orange: #FF641A;
+  --color-logo-facebook: #3B5999;
+  --color-logo-google-blue: #4086F4;
+  --color-logo-google-green: #59C36A;
+  --color-logo-google-yellow: #FFDA2D;
+  --color-logo-blue: #4175DF;
+  --color-logo-light-blue: #03A9F4;
+  --color-logo-indigo: #283593;
+}

@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "pnpm generate:tokens && vite",
+    "build": "pnpm generate:tokens && tsc && vite build",
+    "preview": "vite preview",
+    "generate:tokens": "node scripts/generate-tokens.js"
   },
   "keywords": [],
   "author": "",
