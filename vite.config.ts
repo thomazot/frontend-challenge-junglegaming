@@ -20,6 +20,26 @@ export default defineConfig({
     svgr()
   ],
   
+  
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion')) return 'framer-motion';
+            if (id.includes('lucide-react')) return 'lucide';
+            if (id.includes('@radix-ui')) return 'radix';
+            if (id.includes('@tanstack')) return 'tanstack';
+            if (id.includes('react-iconly')) return 'iconly';
+            if (id.includes('react-dom')) return 'react-dom';
+            if (id.includes('react')) return 'react';
+            return 'vendor';
+          }
+        }
+      }
+    }
+  },
+
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
