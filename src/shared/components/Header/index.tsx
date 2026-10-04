@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
+import { UserRound } from "lucide-react";
 import { Logo } from "@/shared/components/Logo";
 import { Icon } from "@/shared/components/Icon";
 import { Button } from "@/shared/ui/button";
@@ -13,10 +14,12 @@ import { useSlidingIndicator } from "@/shared/hooks/useSlidingIndicator";
 import { useQuery } from "@tanstack/react-query";
 import { getCart } from "@/infrastructure/http";
 import { toast } from "sonner";
+import { AuthDialog } from "@/features/auth/components/AuthDialog";
 
 export function Header() {
   const location = useLocation();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const cartQuery = useQuery({
     queryKey: ["cart"],
     queryFn: ({ signal }) => getCart(signal),
@@ -88,7 +91,7 @@ export function Header() {
             hasError={cartQuery.isError}
           />
 
-          <Button className="ml-2 -mr-1 translate-x-1 px-6">
+          <Button className="ml-2 -mr-1 translate-x-1 px-6" onClick={() => setIsAuthOpen(true)}>
             <Icon name="logout" set="curved" primaryColor="currentColor" size={24} />
             <span>Entrar</span>
           </Button>
@@ -99,8 +102,19 @@ export function Header() {
       <div className="flex md:hidden mx-auto h-20 items-center px-4 gap-3">
         <HeaderMobileSearch />
 
+        <Button
+          type="button"
+          variant="ghostPrimary"
+          size="icon"
+          aria-label="Entrar"
+          onClick={() => setIsAuthOpen(true)}
+          className="shrink-0"
+        >
+          <UserRound className="size-5" />
+        </Button>
         <MobileFilterSheet />
       </div>
+      <AuthDialog open={isAuthOpen} onOpenChange={setIsAuthOpen} />
     </header>
   );
 }

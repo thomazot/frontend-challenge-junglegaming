@@ -16,6 +16,12 @@ export const nameSchema = z.string().trim().min(2, messages.name).max(80, messag
 export const passwordSchema = z.string().min(8, messages.password).max(128, messages.password);
 
 export const registerSchema = z.object({ name: nameSchema, email: emailSchema, password: passwordSchema });
+export const registerFormSchema = registerSchema
+  .extend({ confirmPassword: z.string().min(1, "Confirme sua senha").max(128) })
+  .refine((value) => value.password === value.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "As senhas não coincidem",
+  });
 export const loginSchema = z.object({ email: emailSchema, password: z.string().min(1, "Informe a senha").max(128) });
 
 export const updateProfileSchema = z.object({
