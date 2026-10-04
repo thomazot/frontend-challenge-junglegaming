@@ -9,6 +9,7 @@ import { HeaderMobileSearch } from "@/features/search/components/HeaderMobileSea
 import { cn } from "cn";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/shared/ui/sheet";
 import { CatalogSidebar } from "@/features/catalog/components/CatalogSidebar";
+import { useSlidingIndicator } from "@/shared/hooks/useSlidingIndicator";
 
 export function Header() {
   const location = useLocation();
@@ -20,11 +21,17 @@ export function Header() {
     { to: "/criadores", label: "Criadores" },
     { to: "/aprenda", label: "Aprenda" },
   ];
+  const activeLink = links.find((link) => location.pathname === link.to);
+  const { containerRef: navigationRef, indicatorStyle } = useSlidingIndicator(
+    activeLink?.to ?? "",
+    1,
+    !isSearchExpanded,
+  );
 
   return (
-    <header className="max-w-300 sticky top-0 z-50 w-full border-b-0 md:border-b border-border bg-background mx-auto">
+    <header className="max-w-300 sticky top-0 z-50 w-full border-b-0 md:border-b border-border bg-background mx-auto px-4 xl:px-0">
       {/* --- DESKTOP HEADER --- */}
-      <div className="mx-auto hidden md:flex h-20 items-center justify-between px-8 relative">
+      <div className="relative mx-auto hidden h-20 items-center justify-between md:flex">
         {/* Logo */}
         <div className="flex items-center mr-4">
           <Logo />
@@ -32,27 +39,28 @@ export function Header() {
 
         {/* Navigation Centered */}
         {!isSearchExpanded && (
-          <div className="flex items-center gap-8 h-full">
+          <div ref={navigationRef} className="relative flex h-full items-center gap-8">
             {links.map((link) => {
               const isActive = location.pathname === link.to;
               return (
                 <Link
                   key={link.to}
                   to={link.to}
+                  data-sliding-item={link.to}
                   className={`relative flex h-full items-center px-1 text-base font-medium transition-colors font-mono whitespace-nowrap ${isActive
                     ? "text-primary"
                     : "text-foreground hover:text-muted-foreground"
                     }`}
                 >
                   {link.label}
-                  {isActive && (
-                    <div
-                      className="absolute bottom-0 left-0 h-0.75 w-full bg-primary"
-                    />
-                  )}
                 </Link>
               );
             })}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-0 left-0 h-0.75 bg-primary transition-[transform,width] duration-300 ease-in-out motion-reduce:transition-none"
+              style={indicatorStyle}
+            />
           </div>
         )}
 
@@ -64,7 +72,7 @@ export function Header() {
           <HeaderSearch isExpanded={isSearchExpanded} setIsExpanded={setIsSearchExpanded} />
           <HeaderCart />
 
-          <Button className="ml-2 px-6">
+          <Button className="ml-2 -mr-1 translate-x-1 px-6">
             <Icon name="logout" set="curved" primaryColor="currentColor" size={24} />
             <span>Entrar</span>
           </Button>

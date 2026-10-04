@@ -1,19 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { Route } from "@/app/routes";
 import { useDebouncedValue } from "@/shared/hooks/use-debounced-value";
 
 /**
  * Binds a search input to the `q` search param of the catalog route.
  * Navigation is debounced; external URL changes (back/forward, links) sync the input back.
+ * Safe to use outside the catalog route (returns empty value when not on catalog).
  */
 export function useCatalogSearch() {
-  const search = Route.useSearch();
   const navigate = useNavigate();
   const pathname = useLocation({ select: (location) => location.pathname });
   const isCatalog = pathname === "/";
 
-  const [value, setValue] = useState(search.q ?? "");
+  // Parse q from URL directly to avoid useSearch() hook which requires active route match
+  const getQFromUrl = () => {
+    if (typeof window === "undefined") return "";
+    const params = new URLSearchParams(window.location.search);
+    return params.get("q") ?? "";
+  };
+
+  const [value, setValue] = useState(getQFromUrl);
   const debounced = useDebouncedValue(value, 400);
   /** True when the current debounced value came from typing (not from URL sync). */
   const isTypingRef = useRef(false);
@@ -26,13 +32,13 @@ export function useCatalogSearch() {
   useEffect(() => {
     // URL changed externally (back/forward): sync the input without re-navigating.
     isTypingRef.current = false;
-    setValue(search.q ?? "");
-  }, [search.q]);
+    setValue(getQFromUrl());
+  }, [pathname]); // Re-sync when route changes
 
   useEffect(() => {
     if (!isCatalog || !isTypingRef.current) return;
     const q = debounced.trim();
-    if (q === (search.q ?? "")) return;
+    if (q === getQFromUrl()) return;
     isTypingRef.current = false;
     navigate({
       to: "/",
@@ -41,7 +47,7 @@ export function useCatalogSearch() {
       replace: true,
       resetScroll: false,
     });
-  }, [debounced, isCatalog, search.q, navigate]);
+  }, [debounced, isCatalog, navigate]);
 
   return { value, setValue: setInputValue };
 }

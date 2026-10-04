@@ -32,7 +32,7 @@ function HomePage() {
 
       <div className='px-6 py-8 md:py-0 md:px-8 xl:px-0'>
         <CatalogLayout
-          sidebar={isPending ? <CatalogSidebarSkeleton /> : <CatalogSidebar facets={data?.facets} />}
+          sidebar={isPending || !data ? <CatalogSidebarSkeleton /> : <CatalogSidebar facets={data.facets} />}
           header={<CatalogHeader sort={params.sort} />}
           content={renderContent()}
           pagination={
@@ -52,7 +52,7 @@ function HomePage() {
   );
 
   function renderContent() {
-    if (isPending) return <CatalogGridSkeleton />;
+    if (isPending || !data) return <CatalogGridSkeleton />;
     if (isError) {
       return (
         <div className="py-20 flex flex-col items-center gap-4 text-center">

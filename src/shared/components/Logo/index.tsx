@@ -6,8 +6,8 @@ interface LogoProps {
 
 export function Logo({ className }: LogoProps) {
   return (
-    <Link to="/" className={`flex items-center ${className || ""}`}>
-      <span className="font-bold text-xl tracking-widest text-foreground uppercase font-mono">
+    <Link to="/" className={`flex h-4.5 items-center ${className || ""}`}>
+      <span className="font-mono text-base leading-4.5 font-bold tracking-widest text-foreground uppercase">
         KURIO
       </span>
     </Link>

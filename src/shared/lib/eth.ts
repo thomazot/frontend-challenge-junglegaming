@@ -43,13 +43,13 @@ export const compareEth = (a: EthString, b: EthString): number => {
   return diff > 0n ? 1 : -1;
 };
 
-/** Presentation (pt-BR decimal comma), rounded half-up to `maxFraction` digits. */
-export const formatEth = (value: EthString, maxFraction = 2): string => {
+/** NFT marketplace price presentation, rounded half-up to `maxFraction` digits. */
+export const formatEth = (value: EthString, maxFraction = 2, decimalSeparator = ","): string => {
   const wei = toWei(value);
   const unit = 10n ** BigInt(DECIMALS - maxFraction);
   const rounded = (wei + unit / 2n) / unit;
   const base = 10n ** BigInt(maxFraction);
   const whole = rounded / base;
   if (maxFraction === 0) return `${whole}`;
-  return `${whole},${(rounded % base).toString().padStart(maxFraction, "0")}`;
+  return `${whole}${decimalSeparator}${(rounded % base).toString().padStart(maxFraction, "0")}`;
 };

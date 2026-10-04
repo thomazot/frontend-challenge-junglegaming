@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Route } from "@/app/routes";
 import type { NftSort, NftTab } from "@/shared/api/contracts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import { useSlidingIndicator } from "@/shared/hooks/useSlidingIndicator";
 
 interface CatalogHeaderProps {
   readonly sort?: NftSort;
@@ -18,6 +19,7 @@ export function CatalogHeader({ sort = "recent" }: CatalogHeaderProps) {
   const navigate = useNavigate({ from: "/" });
 
   const activeTab: NftTab = search.tab ?? "todos";
+  const { containerRef, indicatorStyle } = useSlidingIndicator(activeTab, 0.8);
 
   const selectTab = (tab: NftTab) => {
     if (tab === activeTab) return;
@@ -33,7 +35,7 @@ export function CatalogHeader({ sort = "recent" }: CatalogHeaderProps) {
       <div className="flex flex-wrap items-center justify-between gap-4 mt-2">
 
         {/* Custom Tabs to match Header animation */}
-        <div className="flex flex-wrap items-center gap-5 border-none" role="tablist" aria-label="Categorias do catálogo">
+        <div ref={containerRef} className="relative flex flex-wrap items-center gap-5 border-none" role="tablist" aria-label="Categorias do catálogo">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -41,15 +43,20 @@ export function CatalogHeader({ sort = "recent" }: CatalogHeaderProps) {
                 key={tab.id}
                 role="tab"
                 aria-selected={isActive}
+                data-sliding-item={tab.id}
                 onClick={() => selectTab(tab.id)}
                 className={`relative flex flex-col items-center justify-center py-2 bg-transparent border-none outline-none font-mono text-sm leading-4 font-medium transition-colors whitespace-nowrap ${isActive ? "text-primary" : "text-foreground"
                   }`}
               >
                 {tab.label}
-                {isActive && <div className="absolute bottom-0 left-0 w-4/5 h-0.5 bg-primary" />}
               </button>
             );
           })}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 left-0 h-0.5 bg-primary transition-[transform,width] duration-300 ease-in-out motion-reduce:transition-none"
+            style={indicatorStyle}
+          />
         </div>
 
         <div className="hidden md:flex items-center gap-2">

@@ -72,7 +72,7 @@ export const catalogHandlers = [
   }),
 
   route("get", "/api/nfts/:id", (ctx) => {
-    const nft = ctx.db.nfts.find((candidate) => candidate.id === ctx.params.id);
+    const nft = ctx.db.nfts.find((candidate) => candidate.id === ctx.params.id || candidate.slug === ctx.params.id);
     if (!nft) throw new ApiFailure(404, "NOT_FOUND", "NFT não encontrado");
     return ok(nft);
   }),

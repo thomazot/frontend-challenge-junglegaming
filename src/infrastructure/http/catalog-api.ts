@@ -21,7 +21,7 @@ export const listNfts = async (params: NftListParams = {}, signal?: AbortSignal)
   return data;
 };
 
-export const getNft = async (id: string, signal?: AbortSignal): Promise<Nft> => {
-  const { data } = await http.get<Nft>(`/nfts/${id}`, { signal });
+export const getNft = async (idOrSlug: string, signal?: AbortSignal): Promise<Nft> => {
+  const { data } = await http.get<Nft>(`/nfts/${idOrSlug}`, { signal });
   return data;
 };

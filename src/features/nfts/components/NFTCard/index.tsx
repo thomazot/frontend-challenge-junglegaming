@@ -1,9 +1,11 @@
+import { Link } from "@tanstack/react-router";
 import { Icon } from "@/shared/components/Icon";
 import type { EthString } from "@/shared/lib/eth";
 import { formatEth } from "@/shared/lib/eth";
 
 export interface NFTCardProps {
   readonly id: string;
+  readonly slug: string;
   readonly name: string;
   readonly price: EthString;
   readonly oldPrice?: EthString;
@@ -11,11 +13,17 @@ export interface NFTCardProps {
   readonly image: string;
   readonly collection: string;
   readonly network: string;
+  readonly decimalSeparator?: string;
 }
 
-export function NFTCard({ name, price, oldPrice, badge, image }: NFTCardProps) {
+export function NFTCard({ slug, name, price, oldPrice, badge, image, decimalSeparator }: NFTCardProps) {
   return (
-    <div className="flex flex-col gap-3 group cursor-pointer">
+    <Link
+      to="/nft/$nftSlug"
+      params={{ nftSlug: slug }}
+      className="flex flex-col gap-3 group cursor-pointer"
+      aria-label={`Ver detalhes de ${name}`}
+    >
       <div className="relative aspect-square bg-card p-2.5">
         <img
           src={image}
@@ -33,12 +41,12 @@ export function NFTCard({ name, price, oldPrice, badge, image }: NFTCardProps) {
       <div className="flex flex-col gap-1 px-1">
         <h4 className="font-mono text-base font-normal leading-4 text-foreground">{name}</h4>
         <div className="flex items-center gap-2">
-          <span className="font-mono text-lg font-bold leading-4 text-primary">{formatEth(price)} ETH</span>
+          <span className="font-mono text-lg font-bold leading-4 text-primary">{formatEth(price, 2, decimalSeparator)} ETH</span>
           {oldPrice && (
-            <span className="font-mono text-lg font-normal leading-4 text-secondary">{formatEth(oldPrice)} ETH</span>
+            <span className="font-mono text-lg font-normal leading-4 text-secondary">{formatEth(oldPrice, 2, decimalSeparator)} ETH</span>
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

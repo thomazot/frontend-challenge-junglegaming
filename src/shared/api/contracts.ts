@@ -41,6 +41,8 @@ export type NftTab = "todos" | "novos" | "alta";
 
 export interface Nft {
   id: string;
+  /** URL-friendly identifier derived from name (e.g. "emerald-ape-042"). */
+  slug: string;
   name: string;
   description: string;
   image: string;
@@ -49,6 +51,9 @@ export interface Nft {
   creator: string;
   price: EthString;
   oldPrice?: EthString;
+  rating?: { score: number; count: number };
+  serial?: { number: number; total: number };
+  attributes?: string[];
   /** Curatorial tags used by catalog tabs (e.g. "new", "trending"). */
   tags: string[];
   badge?: string;

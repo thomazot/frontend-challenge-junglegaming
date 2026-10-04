@@ -3,7 +3,7 @@ import { buildNfts } from "./fixtures/nfts";
 import { SEED_USERS, SEED_WALLETS } from "./fixtures/accounts";
 import { DEFAULT_SCENARIO_ID, findScenario } from "./scenarios";
 
-const STORAGE_KEY = "mocks:db:v1";
+const STORAGE_KEY = "mocks:db:v4";
 const PBKDF2_ITERATIONS = 100_000;
 
 export interface UserRecord {
