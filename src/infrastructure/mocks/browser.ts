@@ -1,9 +1,8 @@
 import { setupWorker } from "msw/browser";
-import { handlers } from "./handlers";
-import { initDb, resetDb, setScenario, currentScenario } from "./db";
 import { SCENARIOS, findScenario } from "./scenarios";
 
-export const worker = setupWorker(...handlers);
+export const worker = setupWorker();
+let socketHandlersPromise: Promise<void> | undefined;
 
 declare global {
   interface Window {
@@ -30,6 +29,7 @@ const resolveScenarioId = () => {
 };
 
 export const startMocks = async () => {
+  const { initDb, resetDb, setScenario, currentScenario } = await import("./db");
   await initDb();
   const requested = resolveScenarioId();
   if (requested) setScenario(requested);
@@ -49,4 +49,13 @@ export const startMocks = async () => {
   };
 
   await worker.start({ onUnhandledFrame: "bypass", quiet: true });
+  const { handlers } = await import("./handlers");
+  worker.use(...handlers);
+};
+
+export const startSocketMocks = () => {
+  socketHandlersPromise ??= import("./socket").then(({ socketHandlers }) => {
+    worker.use(...socketHandlers);
+  });
+  return socketHandlersPromise;
 };

@@ -27,6 +27,7 @@ export interface RouteContext {
   session: SessionRecord;
   /** Present on every route: optional authenticated identity. */
   maybeUser?: UserRecord;
+  sessionExpired: boolean;
   json: <T>() => Promise<T>;
 }
 
@@ -57,7 +58,14 @@ const failureResponse = (failure: ApiFailure) =>
 /** Deterministic pseudo-random sequence (mulberry32) so latency is reproducible. */
 let latencySeed = 0xc0ffee;
 const nextRandom = () => {
-  latencySeed = (latencySeed + 0x6d2b79f5) | 0;
+  const nextSeed = latencySeed + 0x6d2b79f5;
+  if (nextSeed > 0x7fffffff) {
+    latencySeed = nextSeed - 0x100000000;
+  } else if (nextSeed < -0x80000000) {
+    latencySeed = nextSeed + 0x100000000;
+  } else {
+    latencySeed = nextSeed;
+  }
   let t = Math.imul(latencySeed ^ (latencySeed >>> 15), 1 | latencySeed);
   t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -88,69 +96,96 @@ export const readSession = (cookies: Record<string, string>) => {
   return { sid, expired: false as const, session, user };
 };
 
+const runScenarioBehavior = async (request: Request, url: URL, control: boolean) => {
+  if (control) return undefined;
+
+  const { behavior } = currentScenario();
+  await delay(latencyFor(url));
+  if (behavior.offline) return HttpResponse.error();
+  if (behavior.transientOnce) {
+    const key = `${request.method} ${url.pathname}${url.search}`;
+    if (!runtime.failedOnce.has(key)) {
+      runtime.failedOnce.add(key);
+      throw new ApiFailure(503, "TRANSIENT", "Serviço temporariamente indisponível");
+    }
+  }
+  if (behavior.catalogServerError && request.method === "GET" && url.pathname === "/api/nfts") {
+    throw new ApiFailure(500, "TRANSIENT", "Erro interno no catálogo");
+  }
+  return undefined;
+};
+
+const validateRouteAuthorization = (
+  session: ReturnType<typeof readSession>,
+  authRequired: boolean,
+) => {
+  if (session.session || !authRequired) return;
+  throw new ApiFailure(
+    401,
+    session.expired ? "SESSION_EXPIRED" : "UNAUTHENTICATED",
+    session.expired ? "Sua sessão expirou" : "Autenticação necessária",
+  );
+};
+
+const validateCsrf = (
+  request: Request,
+  cookies: Record<string, string>,
+  session: ReturnType<typeof readSession>,
+  control: boolean,
+) => {
+  if (control || !UNSAFE.has(request.method)) return;
+  if (session.session) {
+    const header = request.headers.get("x-csrf-token");
+    if (!header || header !== session.session.csrf || header !== cookies.csrf) {
+      throw new ApiFailure(403, "CSRF_REJECTED", "Token CSRF inválido");
+    }
+    return;
+  }
+  if (request.headers.get("x-requested-with") !== "XMLHttpRequest") {
+    // The mock relies on this header; a production API must use a pre-session CSRF token.
+    throw new ApiFailure(403, "CSRF_REJECTED", "Requisição não permitida");
+  }
+};
+
+const createRouteContext = (
+  request: Request,
+  url: URL,
+  params: Record<string, string | readonly string[] | undefined>,
+  cookies: Record<string, string>,
+  session: ReturnType<typeof readSession>,
+): RouteContext => ({
+  request,
+  url,
+  params: Object.fromEntries(
+    Object.entries(params).map(([key, value]) => [key, Array.isArray(value) ? String(value[0]) : String(value)]),
+  ),
+  cookies,
+  db: getDb(),
+  user: session.user as UserRecord,
+  session: session.session as SessionRecord,
+  maybeUser: session.user,
+  sessionExpired: session.expired,
+  json: async <T>() => {
+    try {
+      return (await request.clone().json()) as T;
+    } catch {
+      throw new ApiFailure(400, "VALIDATION_ERROR", "Corpo da requisição inválido");
+    }
+  },
+});
+
 export const route = (method: Method, path: string, resolver: Resolver, options: RouteOptions = {}) =>
   http[method](path, async ({ request, params, cookies }) => {
     const url = new URL(request.url);
-    const scenario = currentScenario();
-    const { behavior } = scenario;
 
     try {
-      if (!options.control) {
-        await delay(latencyFor(url));
-        if (behavior.offline) return HttpResponse.error();
-        if (behavior.transientOnce) {
-          const key = `${request.method} ${url.pathname}${url.search}`;
-          if (!runtime.failedOnce.has(key)) {
-            runtime.failedOnce.add(key);
-            throw new ApiFailure(503, "TRANSIENT", "Serviço temporariamente indisponível");
-          }
-        }
-        if (behavior.catalogServerError && request.method === "GET" && url.pathname === "/api/nfts") {
-          throw new ApiFailure(500, "TRANSIENT", "Erro interno no catálogo");
-        }
-      }
+      const scenarioResponse = await runScenarioBehavior(request, url, options.control ?? false);
+      if (scenarioResponse) return scenarioResponse;
 
-      const resolved = readSession(cookies);
-
-      if (!resolved.session && options.auth) {
-        throw new ApiFailure(
-          401,
-          resolved.expired ? "SESSION_EXPIRED" : "UNAUTHENTICATED",
-          resolved.expired ? "Sua sessão expirou" : "Autenticação necessária",
-        );
-      }
-
-      if (UNSAFE.has(request.method) && !options.control) {
-        if (resolved.session) {
-          const header = request.headers.get("x-csrf-token");
-          if (!header || header !== resolved.session.csrf || header !== cookies.csrf) {
-            throw new ApiFailure(403, "CSRF_REJECTED", "Token CSRF inválido");
-          }
-        } else if (request.headers.get("x-requested-with") !== "XMLHttpRequest") {
-          // TODO(security): a real backend must issue a pre-session CSRF token for login/register.
-          throw new ApiFailure(403, "CSRF_REJECTED", "Requisição não permitida");
-        }
-      }
-
-      return await resolver({
-        request,
-        url,
-        params: Object.fromEntries(
-          Object.entries(params).map(([key, value]) => [key, Array.isArray(value) ? String(value[0]) : String(value)]),
-        ),
-        cookies,
-        db: getDb(),
-        user: resolved.user as UserRecord,
-        session: resolved.session as SessionRecord,
-        maybeUser: resolved.user,
-        json: async <T>() => {
-          try {
-            return (await request.clone().json()) as T;
-          } catch {
-            throw new ApiFailure(400, "VALIDATION_ERROR", "Corpo da requisição inválido");
-          }
-        },
-      });
+      const session = readSession(cookies);
+      validateRouteAuthorization(session, options.auth ?? false);
+      validateCsrf(request, cookies, session, options.control ?? false);
+      return await resolver(createRouteContext(request, url, params, cookies, session));
     } catch (error) {
       if (error instanceof ApiFailure) return failureResponse(error);
       // Generic message to the client; details are intentionally not echoed.

@@ -1,0 +1,125 @@
+name: Lighthouse
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.28.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build production app
+        run: pnpm build
+        env:
+          VITE_ENABLE_MOCKS: "true"
+
+      - name: Start preview server
+        run: |
+          pnpm preview --host 127.0.0.1 > /tmp/vite-preview.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/vite-preview.log
+          exit 1
+
+      - name: Run Lighthouse audits
+        run: |
+          mkdir -p lighthouse-reports
+          for form_factor in mobile desktop; do
+            preset=()
+            if [[ "$form_factor" == "desktop" ]]; then
+              preset+=(--preset=desktop)
+            fi
+
+            for route in home detail; do
+              if [[ "$route" == "home" ]]; then
+                path="/"
+              else
+                path="/nft/emerald-ape-000"
+              fi
+
+              pnpm dlx lighthouse@13.5.0 "http://127.0.0.1:4173${path}" \
+                --quiet \
+                --only-categories=performance,accessibility,best-practices,seo,agentic-browsing \
+                --output=json \
+                --output-path="lighthouse-reports/${form_factor}-${route}.json" \
+                --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+                "${preset[@]}"
+            done
+          done
+
+      - name: Add Lighthouse scores to summary
+        if: always()
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from "node:fs";
+
+          const categories = [
+            "performance",
+            "accessibility",
+            "best-practices",
+            "seo",
+            "agentic-browsing",
+          ];
+          const reports = [
+            ["Mobile", "Home", "lighthouse-reports/mobile-home.json"],
+            ["Mobile", "NFT detail", "lighthouse-reports/mobile-detail.json"],
+            ["Desktop", "Home", "lighthouse-reports/desktop-home.json"],
+            ["Desktop", "NFT detail", "lighthouse-reports/desktop-detail.json"],
+          ];
+          const lines = [
+            "## Lighthouse scores",
+            "",
+            "| Device | Page | Performance | Accessibility | Best Practices | SEO | Agentic Browsing |",
+            "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
+          ];
+          let foundReport = false;
+
+          for (const [device, page, path] of reports) {
+            if (!fs.existsSync(path)) continue;
+            foundReport = true;
+            const report = JSON.parse(fs.readFileSync(path, "utf8"));
+            const scores = categories.map((category) =>
+              Math.round(report.categories[category].score * 100),
+            );
+            lines.push(`| ${device} | ${page} | ${scores.map((score) => `${score}%`).join(" | ")} |`);
+          }
+
+          if (foundReport) {
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join("\n")}\n`);
+          }
+          EOF
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: lighthouse-reports/*.json
+          if-no-files-found: warn
+          retention-days: 14

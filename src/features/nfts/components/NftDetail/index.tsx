@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { Nft } from "@/shared/api/contracts";
 import { Card } from "@/shared/ui/card";
 import { NftFavoriteButton } from "../NftFavoriteButton";
 import { NftGallery } from "../NftGallery";
 import { NftInfo } from "../NftInfo";
-import { NftTabs } from "../NftTabs";
-import { RelatedNfts } from "../RelatedNfts";
+
+const NftTabs = lazy(() => import("../NftTabs").then((module) => ({ default: module.NftTabs })));
+const RelatedNfts = lazy(() => import("../RelatedNfts").then((module) => ({ default: module.RelatedNfts })));
 
 interface NftDetailProps {
   readonly nft: Nft;
@@ -13,7 +14,34 @@ interface NftDetailProps {
 
 export function NftDetail({ nft }: NftDetailProps) {
   const [actionError, setActionError] = useState<string>();
+  const [isLargeScreen, setIsLargeScreen] = useState(() => window.matchMedia("(min-width: 1024px)").matches);
+  const [isRelatedNftsNear, setIsRelatedNftsNear] = useState(false);
+  const relatedNftsRef = useRef<HTMLDivElement>(null);
   const galleryImages = nft.galleryImages?.length ? nft.galleryImages : [nft.image];
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const updateIsLargeScreen = () => setIsLargeScreen(media.matches);
+    media.addEventListener("change", updateIsLargeScreen);
+    return () => media.removeEventListener("change", updateIsLargeScreen);
+  }, []);
+
+  useEffect(() => {
+    const element = relatedNftsRef.current;
+    if (!element || !("IntersectionObserver" in window)) {
+      setIsRelatedNftsNear(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsRelatedNftsNear(true);
+        observer.disconnect();
+      }
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="mx-auto flex min-h-dvh w-full flex-col gap-4 rounded-[40px] bg-surface-raised pt-4 md:pt-0 pb-40 md:min-h-0 md:gap-24 md:rounded-none md:bg-transparent md:pb-16 ">
@@ -62,12 +90,20 @@ export function NftDetail({ nft }: NftDetailProps) {
 
       {/* Tabs */}
       <div className="hidden lg:block">
-        <NftTabs nft={nft} />
+        {isLargeScreen && (
+          <Suspense fallback={null}>
+            <NftTabs nft={nft} />
+          </Suspense>
+        )}
       </div>
 
       {/* Related NFTs */}
-      <div>
-        <RelatedNfts currentNft={nft} />
+      <div ref={relatedNftsRef}>
+        {isRelatedNftsNear && (
+          <Suspense fallback={null}>
+            <RelatedNfts currentNft={nft} />
+          </Suspense>
+        )}
       </div>
     </div>
   );

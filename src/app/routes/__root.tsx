@@ -1,11 +1,13 @@
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { createRootRoute, Outlet, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Header } from '@/shared/components/Header';
-import { Footer } from '@/shared/components/Footer';
 import { MockControlPanel } from '@/infrastructure/mocks/MockControlPanel';
 import { cn } from '@/shared/utils/utils';
 import { useRealtimeSync } from '@/app/hooks/use-realtime-sync';
+
+const Header = lazy(() => import('@/shared/components/Header').then((module) => ({ default: module.Header })));
+const Footer = lazy(() => import('@/shared/components/Footer').then((module) => ({ default: module.Footer })));
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -13,9 +15,19 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   useRealtimeSync();
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia('(min-width: 768px)').matches);
   const isNftDetail = useRouterState({
     select: ({ location }) => location.pathname.startsWith('/nft/'),
   });
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 768px)');
+    const updateIsDesktop = () => setIsDesktop(media.matches);
+    media.addEventListener('change', updateIsDesktop);
+    return () => media.removeEventListener('change', updateIsDesktop);
+  }, []);
+
+  const showSiteChrome = !isNftDetail || isDesktop;
 
   return (
     <div
@@ -24,9 +36,13 @@ function RootComponent() {
         isNftDetail ? 'gap-0 bg-surface-raised md:bg-background' : 'gap-4',
       )}
     >
-      <div className={cn(isNftDetail && 'hidden md:block')}>
-        <Header />
-      </div>
+      {showSiteChrome && (
+        <div className={cn(isNftDetail && 'hidden md:block')}>
+          <Suspense fallback={null}>
+            <Header />
+          </Suspense>
+        </div>
+      )}
 
       <main
         className={cn(
@@ -37,9 +53,13 @@ function RootComponent() {
         <Outlet />
       </main>
 
-      <div className={cn(isNftDetail && 'hidden md:block')}>
-        <Footer />
-      </div>
+      {showSiteChrome && (
+        <div className={cn(isNftDetail && 'hidden md:block')}>
+          <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
+        </div>
+      )}
 
       {/* Devtools visíveis apenas no ambiente de desenvolvimento */}
       {import.meta.env.DEV && !isNftDetail && (

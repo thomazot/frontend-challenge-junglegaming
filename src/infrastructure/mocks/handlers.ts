@@ -6,11 +6,9 @@ import { controlHandlers } from "./handlers/control";
 import { newsletterHandlers } from "./handlers/newsletter";
 import { orderHandlers } from "./handlers/orders";
 import { ok, route } from "./server";
-import { socketHandlers } from "./socket";
 
 export const handlers = [
   route("get", "/api/health", () => ok({ status: "ok" }), { control: true }),
-  ...socketHandlers,
   ...controlHandlers,
   ...authHandlers,
   ...catalogHandlers,

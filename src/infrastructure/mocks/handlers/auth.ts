@@ -1,7 +1,7 @@
 import type { Session } from "@/shared/api/contracts";
 import { loginSchema, registerSchema } from "@/shared/api/schemas";
 import { currentScenario, hashPassword, mutateDb, nextId, randomToken, runtime } from "../db";
-import { cartOwner, cookieHeader, mergeGuestCart, publicUser } from "../domain";
+import { cookieHeader, mergeGuestCart, publicUser } from "../domain";
 import { ApiFailure, ok, parse, route } from "../server";
 
 const SESSION_TTL_MS = 60 * 60 * 1000;
@@ -59,7 +59,7 @@ export const authHandlers = [
     const user = ctx.db.users.find((candidate) => candidate.email === input.email);
     // Always hash, so response time does not reveal whether the e-mail exists.
     const candidateHash = await hashPassword(input.password, user?.passwordSalt ?? "00".repeat(16));
-    if (!user || candidateHash !== user.passwordHash) {
+    if (candidateHash !== user?.passwordHash) {
       runtime.loginAttempts.set(input.email, [...recent, now]);
       throw new ApiFailure(401, "INVALID_CREDENTIALS", "E-mail ou senha incorretos");
     }
@@ -70,10 +70,18 @@ export const authHandlers = [
     return ok(sessionBody(user.id, csrf, expiresAt), { headers });
   }),
 
-  route("get", "/api/auth/session", (ctx) =>
-    ok(sessionBody(ctx.user.id, ctx.session.csrf, ctx.session.expiresAt)),
-    { auth: true },
-  ),
+  route("get", "/api/auth/session", (ctx) => {
+    if (!ctx.maybeUser || !ctx.session) {
+      if (ctx.sessionExpired) {
+        throw new ApiFailure(401, "SESSION_EXPIRED", "Sua sessão expirou");
+      }
+      if (ctx.cookies.sid) {
+        throw new ApiFailure(401, "UNAUTHENTICATED", "Autenticação necessária");
+      }
+      return ok(null);
+    }
+    return ok(sessionBody(ctx.user.id, ctx.session.csrf, ctx.session.expiresAt));
+  }),
 
   route("post", "/api/auth/logout", (ctx) => {
     const { sid } = ctx.cookies;
@@ -90,4 +98,4 @@ export const authHandlers = [
   }, { auth: true }),
 ];
 
-export { cartOwner };
+export { cartOwner } from "../domain";

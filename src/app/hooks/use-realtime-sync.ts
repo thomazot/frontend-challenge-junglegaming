@@ -3,12 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Nft, NftListResponse, Order, RealtimeEvent } from "@/shared/api/contracts";
 import { useSession } from "@/features/auth/hooks/use-auth";
-import {
-  connectRealtime,
-  disconnectRealtime,
-  onRealtimeEvent,
-  onRealtimeStatusChange,
-} from "@/infrastructure/socket/client";
+import { disconnectRealtime, loadSocketClient } from "@/infrastructure/socket/lifecycle";
 
 const seenEventIds = new Set<string>();
 const latestVersions = new Map<string, number>();
@@ -121,7 +116,7 @@ const handleRealtimeEvent = (
 export function useRealtimeSync() {
   const queryClient = useQueryClient();
   const sessionQuery = useSession();
-  const userId = sessionQuery.data?.user.id;
+  const userId = sessionQuery.data?.user?.id;
 
   useEffect(() => {
     if (!userId) {
@@ -129,28 +124,47 @@ export function useRealtimeSync() {
       return;
     }
 
+    let isCurrentSession = true;
     let hasConnected = false;
     let connectionWasInterrupted = false;
-    const unsubscribeEvents = onRealtimeEvent((event) => handleRealtimeEvent(queryClient, event));
-    const unsubscribeStatus = onRealtimeStatusChange((status) => {
-      if (status === "disconnected") {
-        if (hasConnected) connectionWasInterrupted = true;
-        return;
-      }
-      if (hasConnected && connectionWasInterrupted) {
-        void queryClient.invalidateQueries({ queryKey: ["nfts"] });
-        void queryClient.invalidateQueries({ queryKey: ["nft"] });
-        void queryClient.invalidateQueries({ queryKey: ["cart"] });
-        void queryClient.invalidateQueries({ queryKey: ["orders"] });
-        void queryClient.invalidateQueries({ queryKey: ["order"] });
-        toast.success("Conexão restabelecida; dados sincronizados");
-      }
-      hasConnected = true;
-      connectionWasInterrupted = false;
-    });
+    let unsubscribeEvents = () => {};
+    let unsubscribeStatus = () => {};
 
-    connectRealtime();
+    const connect = async () => {
+      if (import.meta.env.VITE_ENABLE_MOCKS === "true") {
+        const { startSocketMocks } = await import("@/infrastructure/mocks/browser");
+        await startSocketMocks();
+      }
+      if (!isCurrentSession) return;
+
+      const socketClient = await loadSocketClient();
+      if (!isCurrentSession) return;
+
+      unsubscribeEvents = socketClient.onRealtimeEvent((event) => handleRealtimeEvent(queryClient, event));
+      unsubscribeStatus = socketClient.onRealtimeStatusChange((status) => {
+        if (status === "disconnected") {
+          if (hasConnected) connectionWasInterrupted = true;
+          return;
+        }
+        if (hasConnected && connectionWasInterrupted) {
+          void queryClient.invalidateQueries({ queryKey: ["nfts"] });
+          void queryClient.invalidateQueries({ queryKey: ["nft"] });
+          void queryClient.invalidateQueries({ queryKey: ["cart"] });
+          void queryClient.invalidateQueries({ queryKey: ["orders"] });
+          void queryClient.invalidateQueries({ queryKey: ["order"] });
+          toast.success("Conexão restabelecida; dados sincronizados");
+        }
+        hasConnected = true;
+        connectionWasInterrupted = false;
+      });
+      socketClient.connectRealtime();
+    };
+
+    void connect().catch(() => {
+      if (isCurrentSession) toast.error("Não foi possível iniciar a conexão em tempo real");
+    });
     return () => {
+      isCurrentSession = false;
       unsubscribeEvents();
       unsubscribeStatus();
       disconnectRealtime();

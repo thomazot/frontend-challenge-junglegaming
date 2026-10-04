@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { UserRound } from "lucide-react";
 import { Logo } from "@/shared/components/Logo";
 import { Icon } from "@/shared/components/Icon";
 import { Button } from "@/shared/ui/button";
@@ -143,17 +142,6 @@ export function Header() {
       <div className="flex md:hidden mx-auto h-20 items-center px-4 gap-3">
         <HeaderMobileSearch />
 
-        <Button
-          type="button"
-          variant="ghostPrimary"
-          size="icon"
-          aria-label={sessionQuery.data ? "Sair da conta" : "Entrar"}
-          onClick={handleAuthAction}
-          disabled={auth.isLoggingOut}
-          className="shrink-0"
-        >
-          <UserRound className="size-5" />
-        </Button>
         <MobileFilterSheet />
       </div>
       <AuthDialog open={isAuthOpen} onOpenChange={setIsAuthOpen} />

@@ -69,14 +69,11 @@ export function RelatedNfts({ currentNft }: RelatedNftsProps) {
           {related.map((nft) => (
             <CarouselItem key={nft.id} className="basis-1/3 pl-4 lg:basis-1/5">
               <NFTCard
-                id={nft.id}
                 slug={nft.slug}
                 name={nft.name}
                 price={nft.price}
                 oldPrice={nft.oldPrice}
                 image={nft.image}
-                collection={nft.collection}
-                network={nft.network}
                 badge={nft.badge}
                 decimalSeparator="."
               />
@@ -93,10 +90,14 @@ export function RelatedNfts({ currentNft }: RelatedNftsProps) {
             aria-label={`Ir para grupo ${index + 1}`}
             aria-current={selectedSnap === index ? "true" : undefined}
             onClick={() => carouselApi?.scrollTo(index)}
-            className={`size-3 rounded-full border border-primary transition-colors ${
-              selectedSnap === index ? "bg-primary" : "bg-transparent"
-            }`}
-          />
+            className="flex size-11 items-center justify-center rounded-full"
+          >
+            <span
+              className={`size-3 rounded-full border border-primary transition-colors ${
+                selectedSnap === index ? "bg-primary" : "bg-transparent"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </section>

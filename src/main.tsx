@@ -9,12 +9,21 @@ async function enableMocking() {
   await startMocks();
 }
 
-enableMocking().then(async () => {
-  // Engine.IO captures globalThis.WebSocket at import time; load the app after MSW patches it.
-  const { AppProviders } = await import("./app/providers/AppProviders");
-  createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-      <AppProviders />
-    </StrictMode>
-  );
-});
+const appProviders = import("./app/providers/AppProviders");
+const mocking = enableMocking();
+
+void Promise.all([appProviders, mocking])
+  .then(([{ AppProviders }]) => {
+    const root = document.getElementById("root");
+    if (!root) throw new Error("Root element was not found");
+    createRoot(root).render(
+      <StrictMode>
+        <AppProviders />
+      </StrictMode>,
+    );
+  })
+  .catch((error: unknown) => {
+    console.error("Application startup failed", error);
+    const root = document.getElementById("root");
+    if (root) root.textContent = "Não foi possível iniciar a aplicação. Recarregue a página.";
+  });

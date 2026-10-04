@@ -11,6 +11,52 @@ const messages = {
 export const networkSchema = z.enum(["Ethereum", "Polygon", "Solana"]);
 export const ethSchema = z.string().refine(isEthString, "Valor em ETH inválido");
 
+export const nftSchema = z.object({
+  id: z.string().min(1),
+  slug: z.string().min(1),
+  name: z.string().min(1),
+  description: z.string(),
+  image: z.string().min(1),
+  galleryImages: z.array(z.string().min(1)).optional(),
+  collection: z.string(),
+  network: networkSchema,
+  creator: z.string(),
+  price: ethSchema,
+  oldPrice: ethSchema.optional(),
+  rating: z.object({ score: z.number(), count: z.number().int().nonnegative() }).optional(),
+  serial: z.object({ number: z.number().int().positive(), total: z.number().int().positive() }).optional(),
+  attributes: z.array(z.string()).optional(),
+  tags: z.array(z.string()),
+  badge: z.string().optional(),
+  edition: z.object({
+    total: z.number().int().nonnegative(),
+    available: z.number().int().nonnegative(),
+  }),
+  maxPerOrder: z.number().int().positive(),
+  version: z.number().int().nonnegative(),
+  updatedAt: z.string(),
+});
+
+const facetCountSchema = z.object({
+  label: z.string(),
+  count: z.number().int().nonnegative(),
+});
+
+export const nftListResponseSchema = z.object({
+  data: z.array(nftSchema),
+  meta: z.object({
+    total: z.number().int().nonnegative(),
+    page: z.number().int().positive(),
+    limit: z.number().int().positive(),
+    totalPages: z.number().int().nonnegative(),
+  }),
+  facets: z.object({
+    collections: z.array(facetCountSchema),
+    networks: z.array(facetCountSchema),
+    priceRange: z.object({ min: ethSchema, max: ethSchema }),
+  }),
+});
+
 export const emailSchema = z.string().trim().toLowerCase().max(254, messages.email).pipe(z.email(messages.email));
 export const nameSchema = z.string().trim().min(2, messages.name).max(80, messages.name);
 export const passwordSchema = z.string().min(8, messages.password).max(128, messages.password);

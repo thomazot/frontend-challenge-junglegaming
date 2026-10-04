@@ -30,27 +30,27 @@ const FEATURED_APE: Pick<Nft, "name" | "description" | "collection" | "creator" 
 } satisfies Partial<Nft>;
 
 const RELATED_APES: Record<number, { name: string; price: string; image: string }> = {
-  1: { name: "Jade Guardian #118", price: "1.09", image: "/images/emerald-ape-042.png" },
-  2: { name: "Moss Keeper #072", price: "0.89", image: "/images/violet-nomad.png" },
-  3: { name: "Verdant Seeker #205", price: "1.49", image: "/images/ivory-baron.png" },
-  4: { name: "Ivory Baron #088", price: "1.79", image: "/images/ivory-baron.png" },
-  5: { name: "Jungle Oracle #031", price: "1.19", image: "/images/golden-beat.png" },
-  6: { name: "Sage Nomad #009", price: "1.29", image: "/images/violet-nomad.png" },
-  7: { name: "Amber Guardian #144", price: "0.99", image: "/images/emerald-ape-042.png" },
-  8: { name: "Violet Nomad #314", price: "1.39", image: "/images/violet-nomad.png" },
-  9: { name: "Ivory Seeker #062", price: "1.59", image: "/images/ivory-baron.png" },
-  10: { name: "Golden Oracle #093", price: "1.09", image: "/images/golden-beat.png" },
-  11: { name: "Forest Relic #217", price: "1.79", image: "/images/emerald-ape-042.png" },
-  12: { name: "Canopy Keeper #072", price: "0.89", image: "/images/emerald-ape-042.png" },
-  13: { name: "Jade Nomad #083", price: "1.29", image: "/images/violet-nomad.png" },
-  14: { name: "Golden Seeker #196", price: "0.99", image: "/images/golden-beat.png" },
-  15: { name: "Emerald Oracle #055", price: "1.39", image: "/images/ivory-baron.png" },
-  16: { name: "Ivory Baron #088", price: "1.79", image: "/images/ivory-baron.png" },
-  20: { name: "Verdant Seeker #205", price: "1.49", image: "/images/violet-nomad.png" },
-  24: { name: "Golden Beat #287", price: "0.99", image: "/images/golden-beat.png" },
-  28: { name: "Jungle Oracle #031", price: "1.19", image: "/images/ivory-baron.png" },
-  32: { name: "Sage Nomad #009", price: "1.29", image: "/images/violet-nomad.png" },
-  40: { name: "Golden Beat #207", price: "0.99", image: "/images/golden-beat.png" },
+  1: { name: "Jade Guardian #118", price: "1.09", image: "/images/emerald-ape-042.webp" },
+  2: { name: "Moss Keeper #072", price: "0.89", image: "/images/violet-nomad.webp" },
+  3: { name: "Verdant Seeker #205", price: "1.49", image: "/images/ivory-baron.webp" },
+  4: { name: "Ivory Baron #088", price: "1.79", image: "/images/ivory-baron.webp" },
+  5: { name: "Jungle Oracle #031", price: "1.19", image: "/images/golden-beat.webp" },
+  6: { name: "Sage Nomad #009", price: "1.29", image: "/images/violet-nomad.webp" },
+  7: { name: "Amber Guardian #144", price: "0.99", image: "/images/emerald-ape-042.webp" },
+  8: { name: "Violet Nomad #314", price: "1.39", image: "/images/violet-nomad.webp" },
+  9: { name: "Ivory Seeker #062", price: "1.59", image: "/images/ivory-baron.webp" },
+  10: { name: "Golden Oracle #093", price: "1.09", image: "/images/golden-beat.webp" },
+  11: { name: "Forest Relic #217", price: "1.79", image: "/images/emerald-ape-042.webp" },
+  12: { name: "Canopy Keeper #072", price: "0.89", image: "/images/emerald-ape-042.webp" },
+  13: { name: "Jade Nomad #083", price: "1.29", image: "/images/violet-nomad.webp" },
+  14: { name: "Golden Seeker #196", price: "0.99", image: "/images/golden-beat.webp" },
+  15: { name: "Emerald Oracle #055", price: "1.39", image: "/images/ivory-baron.webp" },
+  16: { name: "Ivory Baron #088", price: "1.79", image: "/images/ivory-baron.webp" },
+  20: { name: "Verdant Seeker #205", price: "1.49", image: "/images/violet-nomad.webp" },
+  24: { name: "Golden Beat #287", price: "0.99", image: "/images/golden-beat.webp" },
+  28: { name: "Jungle Oracle #031", price: "1.19", image: "/images/ivory-baron.webp" },
+  32: { name: "Sage Nomad #009", price: "1.29", image: "/images/violet-nomad.webp" },
+  40: { name: "Golden Beat #207", price: "0.99", image: "/images/golden-beat.webp" },
 };
 
 /** Integer cents → decimal ETH string (no float arithmetic). */
@@ -102,14 +102,14 @@ const buildNft = (index: number): Nft => {
     description: isFeatured
       ? FEATURED_APE.description
       : `Edição digital exclusiva da coleção ${COLLECTIONS[index % COLLECTIONS.length]}.`,
-    image: isFeatured ? "/images/emerald-ape-042.png" : relatedApe?.image ?? "/images/monkey-nft.jpg",
+    image: isFeatured ? "/images/emerald-ape-042.webp" : relatedApe?.image ?? "/images/monkey-nft.jpg",
     ...(isFeatured
       ? {
           galleryImages: [
-            "/images/emerald-ape-042.png",
-            "/images/violet-nomad.png",
-            "/images/ivory-baron.png",
-            "/images/golden-beat.png",
+            "/images/emerald-ape-042.webp",
+            "/images/violet-nomad.webp",
+            "/images/ivory-baron.webp",
+            "/images/golden-beat.webp",
             "/images/monkey-nft.jpg",
           ],
         }

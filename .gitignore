@@ -15,6 +15,7 @@ dist-ssr
 # Playwright run artifacts (visual baselines in e2e/__screenshots__ are versioned)
 playwright-report/
 test-results/
+lighthouse-reports/
 
 # Editor directories and files
 .vscode/*

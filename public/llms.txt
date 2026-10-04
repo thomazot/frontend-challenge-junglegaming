@@ -1,0 +1,9 @@
+# Kurio NFT Marketplace
+
+Kurio is a digital marketplace for discovering NFT collections, viewing NFT details, and exploring digital artwork.
+
+## Main pages
+
+- [Marketplace home](https://junglegaming.thomazot.com.br/)
+- [NFT detail example](https://junglegaming.thomazot.com.br/nft/emerald-ape-000)
+- [AI resource catalog](https://junglegaming.thomazot.com.br/.well-known/ai-catalog.json)

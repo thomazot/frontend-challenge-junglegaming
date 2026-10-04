@@ -1,0 +1,18 @@
+{
+  "specVersion": "1.0",
+  "entries": [
+    {
+      "identifier": "urn:air:junglegaming.thomazot.com.br:catalog:kurio-nft-marketplace",
+      "displayName": "Kurio NFT Marketplace",
+      "type": "application/ai-catalog+json",
+      "url": "https://junglegaming.thomazot.com.br/.well-known/ai-catalog.json",
+      "representativeQueries": [
+        "Explore NFT collections on Kurio",
+        "View NFT artwork, editions, and prices",
+        "Find digital collectibles in the Kurio marketplace"
+      ],
+      "description": "Discover NFT collections, artwork, editions, and current prices in the Kurio marketplace.",
+      "tags": ["NFT", "digital collectibles", "marketplace"]
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient, type QueryClient } from "@tansta
 import { toApiError } from "@/shared/api/http";
 import type { LoginInput, RegisterInput, Session } from "@/shared/api/contracts";
 import { getSession, login, logout, register } from "@/infrastructure/http/auth-api";
-import { disconnectRealtime } from "@/infrastructure/socket/client";
+import { disconnectRealtime } from "@/infrastructure/socket/lifecycle";
 
 export const sessionQueryKey = ["session"] as const;
 

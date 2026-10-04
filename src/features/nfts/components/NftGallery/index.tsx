@@ -67,6 +67,7 @@ export function NftGallery({ images, name }: NftGalleryProps) {
               alt={name}
               className="size-full rounded-xl object-cover"
               loading="eager"
+              fetchPriority="high"
             />
             <span className="pointer-events-none absolute right-3 top-3 hidden size-10 items-center justify-center rounded-full bg-surface-raised text-white md:flex">
               <Icon name="search" className="size-5" />

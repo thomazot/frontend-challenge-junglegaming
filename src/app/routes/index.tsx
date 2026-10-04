@@ -32,11 +32,11 @@ function HomePage() {
 
       <div className='px-6 py-8 md:py-0 md:px-8 xl:px-0'>
         <CatalogLayout
-          sidebar={isPending || !data ? <CatalogSidebarSkeleton /> : <CatalogSidebar facets={data.facets} />}
+          sidebar={isPending || !data?.facets ? <CatalogSidebarSkeleton /> : <CatalogSidebar facets={data.facets} />}
           header={<CatalogHeader sort={params.sort} />}
           content={renderContent()}
           pagination={
-            data && data.meta.totalPages > 1 ? (
+            data?.meta && data.meta.totalPages > 1 ? (
               <CatalogPagination
                 page={data.meta.page}
                 totalPages={data.meta.totalPages}
@@ -52,7 +52,6 @@ function HomePage() {
   );
 
   function renderContent() {
-    if (isPending || !data) return <CatalogGridSkeleton />;
     if (isError) {
       return (
         <div className="py-20 flex flex-col items-center gap-4 text-center">
@@ -63,6 +62,7 @@ function HomePage() {
         </div>
       );
     }
+    if (isPending || !data) return <CatalogGridSkeleton />;
     return <CatalogGrid items={data.data} />;
   }
 }
