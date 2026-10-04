@@ -6,7 +6,9 @@ The [`Lighthouse` GitHub Actions workflow](../.github/workflows/lighthouse.yml) 
 
 Each run publishes the Performance, Accessibility, Best Practices, SEO, and Agentic Browsing scores in the Actions job summary and uploads the JSON reports as a `lighthouse-reports` artifact for 14 days. Reports are not committed because Lighthouse scores vary with the runner and network conditions. Local report files are ignored by Git.
 
-The workflow currently reports scores without blocking merges. The target is 100 in all five categories; performance, especially on mobile, needs further improvement before score thresholds can be used as a reliable CI gate.
+The workflow reports scores without blocking merges. The challenge's required Lighthouse targets are Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95, and SEO ≥ 90. Agentic Browsing is an additional workflow category, not one of the four scored criteria in the challenge brief.
+
+Each workflow run measures each page/device combination once. It does not calculate the required median of three runs, collect LCP/CLS/TBT as a report, or retain HTML reports. Treat its scores as a CI snapshot, not as the complete audit evidence requested by the challenge.
 
 To run an audit locally, build and serve the production bundle:
 
@@ -25,3 +27,5 @@ pnpm dlx lighthouse@13.5.0 http://127.0.0.1:4173/ \
 ```
 
 Use `/nft/emerald-ape-000` instead of `/` to audit the NFT detail page.
+
+For the challenge report, run each of the four route/device combinations three times and report the median category scores. Include LCP, CLS, TBT, Lighthouse/Chrome versions, device profile, build and mock configuration, and relevant runner/network conditions. Preserve the HTML/JSON reports with the delivery evidence.

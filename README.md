@@ -9,8 +9,12 @@ Marketplace responsivo de NFTs construído para o desafio técnico Frontend Deve
 - **Branch entregue:** https://github.com/thomazot/frontend-challenge-junglegaming/tree/thomazot/challenge
 - **Design de referência:** [Figma](https://www.figma.com/design/8ehqY4RLqcztDLYkASXBCr/Frontend-Challenge--Copy-?node-id=10-244&m=dev)
 - **Enunciado e critérios completos:** [docs/CHALLEGER.md](./docs/CHALLEGER.md)
+- **Arquitetura e decisões técnicas:** [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **Checklist de implementação:** [docs/CHECKLIST.md](./docs/CHECKLIST.md)
+- **Tokens de design:** [docs/FIGMA-TOKENS.md](./docs/FIGMA-TOKENS.md)
+- **Auditoria Lighthouse:** [docs/QUALITY.md](./docs/QUALITY.md)
 
-O projeto implementa descoberta e busca de NFTs, filtros, detalhes, favoritos, carrinho, checkout simulado, pedidos, conta do colecionador e atualizações em tempo real. Serviços externos de pagamento, carteiras e blockchain são simulados; a aplicação não depende de backend privado.
+O projeto implementa as telas de catálogo e detalhe de NFT, busca, filtros, favoritos, ação de adicionar ao carrinho, autenticação em diálogo e atualizações de NFT em tempo real. Os handlers MSW também simulam recursos de carrinho, pedidos, perfil e carteiras, mas nem todos esses recursos têm telas ou fluxos completos conectados na interface. Não há integração real com pagamento, carteiras ou blockchain.
 
 ## Stack
 
@@ -128,17 +132,6 @@ pnpm exec playwright show-report
 ```
 
 Traces, vídeos e capturas de tela são retidos em caso de falha. Os baselines visuais versionados ficam em `e2e/__screenshots__/`.
-
-## Arquitetura e decisões
-
-- **Rotas e estado remoto:** TanStack Router mantém as rotas e parâmetros de busca; TanStack Query gerencia consultas, mutations, cache e invalidação; Axios centraliza as chamadas REST.
-- **Contratos:** os tipos de transporte ficam em `src/shared/api/contracts.ts`; schemas Zod validam dados externos antes do uso na interface.
-- **APIs simuladas:** MSW intercepta chamadas na camada de rede. O banco simulado mantém estado coerente de contas, catálogo, favoritos, carrinho, perfil, carteiras e pedidos, com persistência local para suportar refresh.
-- **Conta e isolamento:** as sessões são simuladas por cookies. Ao sair ou trocar de usuário, dados privados são removidos do cache e a conexão realtime da sessão anterior é encerrada.
-- **Carrinho e checkout:** o carrinho e a cotação são consultados pela API simulada. A cotação é revalidada antes da criação do pedido. A chave de idempotência permite recuperar a mesma compra após timeout; a confirmação usa o snapshot imutável do pedido.
-- **Atualização otimista:** favoritos atualizam a interface antes da resposta do servidor e fazem rollback em caso de falha.
-- **Socket.IO:** cliente same-origin em `/socket.io/`, usando WebSocket, sem fallback de long-polling. Em builds com mocks, o binding do MSW simula o protocolo. `nft.updated` atualiza dados de NFTs e invalida cotação/carrinho; `order.updated` sincroniza pedidos. Eventos antigos ou duplicados são descartados pela identidade e versão, e uma reconexão invalida consultas ativas para reconciliar o estado com REST.
-- **Limitação do realtime:** a demonstração depende dos mocks habilitados; o transporte WebSocket sem polling é uma decisão para compatibilidade com a interceptação Socket.IO do MSW.
 
 ## Lighthouse
 
