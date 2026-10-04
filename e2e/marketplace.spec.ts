@@ -41,6 +41,7 @@ test("signed-in favorite mutation rolls back on a simulated server failure", asy
   await expect(favoriteButton).toBeEnabled();
   await favoriteButton.click();
   await expect(page.getByRole("button", { name: "Remover NFT dos favoritos" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("NFT adicionado aos favoritos")).toBeVisible();
 
   await page.evaluate(async () => {
     const response = await fetch("/api/__mocks__/scenario", {
@@ -62,6 +63,19 @@ test("mobile footer user action opens the authentication dialog", async ({ page 
   await expect(userAction).toBeVisible();
   await userAction.click();
   await expect(page.getByRole("dialog")).toBeVisible();
+});
+
+test("mobile header does not request desktop cart data", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const cartRequests: string[] = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).pathname === "/api/cart") cartRequests.push(request.url());
+  });
+
+  await page.reload();
+  await expect(page.getByRole("tab", { name: "Todos os NFTs" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Emerald Ape/ }).first()).toBeVisible();
+  expect(cartRequests).toEqual([]);
 });
 
 test("anonymous session lookup returns an empty session without an HTTP error", async ({ page }) => {

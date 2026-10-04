@@ -32,7 +32,7 @@ export function HeroBanner() {
       aria-label="Banner Principal"
       className="w-full px-4 md:px-0"
     >
-      <div className="max-w-300 mx-auto px-6 py-8 md:py-0 md:px-8 xl:px-0 relative overflow-hidden rounded-3xl md:rounded-none bg-[linear-gradient(105deg,rgba(210,138,76,0.20)_1.08%,rgba(210,138,76,0.10)_99.23%)] md:!bg-transparent md:!bg-none">
+      <div className="max-w-300 mx-auto px-6 py-8 md:py-0 md:px-8 xl:px-0 relative overflow-hidden rounded-3xl md:rounded-none bg-[linear-gradient(105deg,rgba(210,138,76,0.20)_1.08%,rgba(210,138,76,0.10)_99.23%)] md:bg-transparent! md:bg-none!">
 
         {/* Círculos decorativos do fundo (apenas mobile) */}
         <div className="absolute inset-0 pointer-events-none md:hidden overflow-hidden rounded-3xl">
@@ -105,6 +105,8 @@ export function HeroBanner() {
                 <div className="w-full md:flex-1 flex justify-end absolute md:relative right-0 top-0 md:top-auto">
                   <img
                     src="/images/monkey-nft.jpg"
+                    srcSet="/images/monkey-nft-144.webp 144w, /images/monkey-nft-384.webp 384w, /images/monkey-nft.jpg 504w"
+                    sizes="(max-width: 767px) 144px, 504px"
                     alt="Avatar NFT 3D de um macaco"
                     fetchPriority="high"
                     className="w-36 h-36 md:w-full md:h-auto aspect-square object-cover rounded-3xl md:rounded-3xl shadow-lg md:max-w-lg z-10"

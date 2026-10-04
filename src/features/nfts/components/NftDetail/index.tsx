@@ -13,7 +13,6 @@ interface NftDetailProps {
 }
 
 export function NftDetail({ nft }: NftDetailProps) {
-  const [actionError, setActionError] = useState<string>();
   const [isLargeScreen, setIsLargeScreen] = useState(() => window.matchMedia("(min-width: 1024px)").matches);
   const [isRelatedNftsNear, setIsRelatedNftsNear] = useState(false);
   const relatedNftsRef = useRef<HTMLDivElement>(null);
@@ -58,12 +57,10 @@ export function NftDetail({ nft }: NftDetailProps) {
           </a>
           <NftFavoriteButton
             nftId={nft.id}
-            onError={setActionError}
             compact
             className="flex size-8.75 flex-col items-center justify-center gap-2.5 self-stretch rounded-[17.5px] border border-border bg-surface-raised text-primary"
           />
         </div>
-        {actionError && <p role="alert" className="text-sm text-text-coral">{actionError}</p>}
 
         {/* Breadcrumb */}
         <nav className="hidden items-center gap-2 text-[15px] font-bold text-foreground md:flex" aria-label="Breadcrumb">
@@ -83,7 +80,7 @@ export function NftDetail({ nft }: NftDetailProps) {
             />
           </div>
           <Card className="relative z-10 -mx-4 -mt-8 min-w-0 gap-0 rounded-t-3xl rounded-b-none border-0 bg-surface-card px-8 py-5 shadow-none md:mx-0 md:mt-0 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none">
-            <NftInfo nft={nft} onActionError={setActionError} />
+            <NftInfo nft={nft} />
           </Card>
         </div>
       </section>

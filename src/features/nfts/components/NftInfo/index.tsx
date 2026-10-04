@@ -39,10 +39,9 @@ const floatingPurchaseFooterVariants = cva(
 
 interface NftInfoProps {
   readonly nft: Nft;
-  readonly onActionError: (message?: string) => void;
 }
 
-export function NftInfo({ nft, onActionError }: NftInfoProps) {
+export function NftInfo({ nft }: NftInfoProps) {
   const [quantity, setQuantity] = useState(1);
   const queryClient = useQueryClient();
   const reviewsQuery = useNftReviews(nft.id, 1);
@@ -151,7 +150,6 @@ export function NftInfo({ nft, onActionError }: NftInfoProps) {
           </Button>
           <NftFavoriteButton
             nftId={nft.id}
-            onError={onActionError}
             className="h-10 rounded-md border-primary bg-transparent px-4 font-mono text-sm font-semibold text-primary hover:bg-primary/10 hover:text-primary"
           />
         </div>

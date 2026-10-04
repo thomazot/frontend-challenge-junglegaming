@@ -35,6 +35,8 @@ As rotas UI atualmente registradas são `/` e `/nft/$nftSlug`. Não há rotas de
 
 TanStack Router mantém os parâmetros do catálogo na URL para permitir refresh, compartilhamento e navegação pelo histórico. TanStack Query mantém o estado remoto e controla carregamento, erros, mutations e invalidação. As chamadas HTTP são feitas pelos módulos de infraestrutura via Axios; componentes não fabricam respostas de API.
 
+O header só consulta o carrinho quando a navegação está em desktop, onde a contagem é exibida. No mobile esse dado não é apresentado no header, então a chamada REST é desabilitada para evitar tráfego que não contribui para a interface visível.
+
 ## Contratos REST
 
 Os handlers MSW implementam os seguintes recursos de aplicação:
@@ -107,7 +109,7 @@ Os cenários incluem fluxo normal e rápido, rede lenta, catálogo vazio, respos
 
 ## UX, responsividade e acessibilidade
 
-As telas de catálogo e detalhe usam layouts responsivos e assets locais para imagens. Roboto Mono é carregada por Google Fonts; Geist é empacotada como dependência adicional. O catálogo, detalhe e áreas dependentes de API apresentam estados de carregamento, vazio e falha, com tentativa de recuperação quando aplicável. O diálogo de autenticação e outros drawers usam componentes acessíveis compartilhados; botões e campos possuem nomes acessíveis e os elementos de navegação preservam semântica.
+As telas de catálogo e detalhe usam layouts responsivos e assets locais para imagens. O avatar LCP do hero tem fontes responsivas WebP para mobile; a versão desktop mantém o JPEG original. Roboto Mono é carregada assincronamente por Google Fonts; Geist é empacotada como dependência adicional. O catálogo, detalhe e áreas dependentes de API apresentam estados de carregamento, vazio e falha, com tentativa de recuperação quando aplicável. Feedbacks de ações — como favoritar, adicionar ao carrinho e autenticação — usam os toasts Sonner já configurados com as cores, tipografia e superfícies do projeto; erros de validação de formulário continuam associados aos respectivos campos. O diálogo de autenticação e outros drawers usam componentes acessíveis compartilhados; botões e campos possuem nomes acessíveis e os elementos de navegação preservam semântica.
 
 O README orienta execução e testes nos perfis desktop e mobile. Os baselines Playwright cobrem Home e detalhe em desktop/mobile. Uma comparação manual ou automatizada final com todos os frames originais do Figma ainda é responsabilidade da revisão visual da entrega; indisponibilidade do Figma pode impedir inspeção independente do arquivo.
 

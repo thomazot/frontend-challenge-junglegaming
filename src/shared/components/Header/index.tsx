@@ -21,13 +21,22 @@ export function Header() {
   const location = useLocation();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia("(min-width: 768px)").matches);
   const sessionQuery = useSession();
   const auth = useAuthMutations();
   const queryClient = useQueryClient();
   const cartQuery = useQuery({
     queryKey: ["cart"],
     queryFn: ({ signal }) => getCart(signal),
+    enabled: isDesktop,
   });
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const updateIsDesktop = () => setIsDesktop(media.matches);
+    media.addEventListener("change", updateIsDesktop);
+    return () => media.removeEventListener("change", updateIsDesktop);
+  }, []);
 
   useEffect(() => {
     if (cartQuery.isError) {

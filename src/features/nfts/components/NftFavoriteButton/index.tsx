@@ -4,15 +4,15 @@ import { addFavorite, getFavoriteStatus, removeFavorite } from "@/infrastructure
 import { toApiError } from "@/shared/api/http";
 import { Icon } from "@/shared/components/Icon";
 import { Button } from "@/shared/ui/button";
+import { toast } from "sonner";
 
 interface NftFavoriteButtonProps {
   readonly nftId: string;
-  readonly onError: (message?: string) => void;
   readonly className?: string;
   readonly compact?: boolean;
 }
 
-export function NftFavoriteButton({ nftId, onError, className, compact = false }: NftFavoriteButtonProps) {
+export function NftFavoriteButton({ nftId, className, compact = false }: NftFavoriteButtonProps) {
   const queryClient = useQueryClient();
   const favoriteQuery = useQuery({
     queryKey: ["nft-favorite", nftId],
@@ -37,10 +37,10 @@ export function NftFavoriteButton({ nftId, onError, className, compact = false }
       }
       return { previousFavorite, previousFavorites };
     },
-    onSuccess: (nftIds) => {
+    onSuccess: (nftIds, shouldFavorite) => {
       queryClient.setQueryData(["favorites"], nftIds);
       queryClient.setQueryData(["nft-favorite", nftId], nftIds.includes(nftId));
-      onError();
+      toast.success(shouldFavorite ? "NFT adicionado aos favoritos" : "NFT removido dos favoritos");
     },
     onError: (error, _shouldFavorite, context) => {
       if (context?.previousFavorite === undefined) {
@@ -54,22 +54,23 @@ export function NftFavoriteButton({ nftId, onError, className, compact = false }
         queryClient.setQueryData(["favorites"], context.previousFavorites);
       }
       const apiError = toApiError(error);
-      onError(
-        apiError.code === "UNAUTHENTICATED" || apiError.code === "SESSION_EXPIRED"
-          ? "Entre na sua conta para favoritar este NFT."
-          : apiError.message,
-      );
+      if (apiError.code === "UNAUTHENTICATED" || apiError.code === "SESSION_EXPIRED") {
+        toast.warning("Entre na sua conta para favoritar este NFT.");
+      } else {
+        toast.error(apiError.message);
+      }
     },
   });
 
   const favorited = favoriteQuery.data ?? false;
 
   useEffect(() => {
-    if (favoriteQuery.error) onError(toApiError(favoriteQuery.error).message);
-  }, [favoriteQuery.error, onError]);
+    if (favoriteQuery.error) {
+      toast.error(toApiError(favoriteQuery.error).message, { id: `favorite-load-error-${nftId}` });
+    }
+  }, [favoriteQuery.error, nftId]);
 
   const toggleFavorite = () => {
-    onError();
     favoriteMutation.mutate(!favorited);
   };
 
