@@ -16,6 +16,7 @@ export const nameSchema = z.string().trim().min(2, messages.name).max(80, messag
 export const passwordSchema = z.string().min(8, messages.password).max(128, messages.password);
 
 export const registerSchema = z.object({ name: nameSchema, email: emailSchema, password: passwordSchema });
+export const newsletterSubscriptionSchema = z.object({ email: emailSchema });
 export const registerFormSchema = registerSchema
   .extend({ confirmPassword: z.string().min(1, "Confirme sua senha").max(128) })
   .refine((value) => value.password === value.confirmPassword, {

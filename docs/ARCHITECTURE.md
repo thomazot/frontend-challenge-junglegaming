@@ -28,7 +28,10 @@ Este documento descreve as decisões arquiteturais, contratos, estado e estraté
 
 ### 5. Política de Sessão
 - Autenticação e credenciais virtuais possuem expiração.
-- Se a sessão for perdida no checkout, o usuário vai para o login com contexto preservado. O Logout engatilha varredura imediata e completa (`queryClient.clear()`) e desconexão de sockets.
+- A sessão é consultada pela API ao iniciar a aplicação e recuperada pelo cookie; somente o objeto de sessão fica no cache em memória do TanStack Query. Credenciais e tokens não são persistidos em Local Storage.
+- Login e cadastro atualizam o cache da sessão após sucesso e sincronizam o carrinho do visitante. As mutations não retêm as variáveis de credenciais após concluírem.
+- Logout e troca de usuário removem as queries privadas e desconectam o socket da sessão anterior; o catálogo permanece em cache e dados dependentes do usuário são invalidados quando necessário.
+- Se a sessão for perdida no checkout, o usuário vai para o login com contexto preservado.
 
 ---
 

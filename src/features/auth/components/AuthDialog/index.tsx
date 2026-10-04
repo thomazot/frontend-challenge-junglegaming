@@ -1,9 +1,8 @@
 import { useState, type SubmitEvent } from "react";
 import { Eye, EyeOff, X } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { login, register } from "@/infrastructure/http/auth-api";
 import type { LoginInput, RegisterInput, Session } from "@/shared/api/contracts";
+import { useAuthMutations } from "@/features/auth/hooks/use-auth";
 import { loginSchema, registerFormSchema, toFieldErrors } from "@/shared/api/schemas";
 import { toApiError } from "@/shared/api/http";
 import { Button } from "@/shared/ui/button";
@@ -33,13 +32,22 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
   const [values, setValues] = useState<AuthValues>(emptyValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [visiblePasswords, setVisiblePasswords] = useState({ password: false, confirmPassword: false });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const queryClient = useQueryClient();
+  const auth = useAuthMutations();
   const isRegister = mode === "register";
+  const isSubmitting = auth.isLoggingIn || auth.isRegistering;
 
   const changeMode = (nextMode: AuthMode) => {
     setMode(nextMode);
     setErrors({});
+  };
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setValues(emptyValues);
+      setErrors({});
+      setVisiblePasswords({ password: false, confirmPassword: false });
+    }
+    onOpenChange(nextOpen);
   };
 
   const updateValue = (field: AuthField, value: string) => {
@@ -49,7 +57,6 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let authenticate: () => Promise<Session>;
     if (isRegister) {
       const parsed = registerFormSchema.safeParse(values);
       if (!parsed.success) {
@@ -58,7 +65,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
       }
       const { name, email, password } = parsed.data;
       const credentials: RegisterInput = { name, email, password };
-      authenticate = () => register(credentials);
+      await submitAuthentication(() => auth.register(credentials), "Conta criada com sucesso");
     } else {
       const parsed = loginSchema.safeParse({ email: values.email, password: values.password });
       if (!parsed.success) {
@@ -66,24 +73,23 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
         return;
       }
       const credentials: LoginInput = parsed.data;
-      authenticate = () => login(credentials);
+      await submitAuthentication(() => auth.login(credentials), "Login realizado com sucesso");
     }
+  };
 
-    setIsSubmitting(true);
+  const submitAuthentication = async (
+    authenticate: () => Promise<Session>,
+    successMessage: string,
+  ) => {
     setErrors({});
     try {
-      const session = await authenticate();
-      queryClient.setQueryData(["session"], session);
-      await queryClient.invalidateQueries({ queryKey: ["cart"] });
-      toast.success(isRegister ? "Conta criada com sucesso" : "Login realizado com sucesso");
-      onOpenChange(false);
-      setValues(emptyValues);
+      await authenticate();
+      toast.success(successMessage);
+      handleOpenChange(false);
     } catch (error) {
       const apiError = toApiError(error);
       setErrors(apiError.fieldErrors ?? {});
       toast.error(apiError.message);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -99,7 +105,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
   if (isSubmitting) submitLabel = "Aguarde...";
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
         className="inset-2 mx-auto flex max-h-[calc(100dvh-1rem)] w-auto max-w-lg translate-x-0 translate-y-0 flex-col overflow-y-auto rounded-xl border-border bg-surface-card p-0 text-foreground shadow-2xl md:inset-x-1/2 md:inset-y-1/2 md:h-fit md:max-h-[90dvh] md:w-[calc(100%-2rem)] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl"

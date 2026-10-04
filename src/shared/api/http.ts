@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import type { ApiErrorBody, ApiErrorCode } from "./contracts";
 
 const UNSAFE_METHODS = new Set(["post", "put", "patch", "delete"]);
+export const SESSION_EXPIRED_EVENT = "kurio:session-expired";
 
 const readCookie = (name: string): string | undefined => {
   const match = document.cookie.split("; ").find((entry) => entry.startsWith(`${name}=`));
@@ -71,5 +72,11 @@ export const toApiError = (error: unknown): ApiError => {
 
 http.interceptors.response.use(
   (response) => response,
-  (error) => Promise.reject(toApiError(error)),
+  (error) => {
+    const apiError = toApiError(error);
+    if (apiError.code === "SESSION_EXPIRED" && typeof window !== "undefined") {
+      window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
+    }
+    return Promise.reject(apiError);
+  },
 );

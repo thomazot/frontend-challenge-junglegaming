@@ -11,15 +11,20 @@ import { cn } from "cn";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/shared/ui/sheet";
 import { CatalogSidebar } from "@/features/catalog/components/CatalogSidebar";
 import { useSlidingIndicator } from "@/shared/hooks/useSlidingIndicator";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCart } from "@/infrastructure/http";
 import { toast } from "sonner";
 import { AuthDialog } from "@/features/auth/components/AuthDialog";
+import { clearAuthenticatedCache, useAuthMutations, useSession } from "@/features/auth/hooks/use-auth";
+import { SESSION_EXPIRED_EVENT, toApiError } from "@/shared/api/http";
 
 export function Header() {
   const location = useLocation();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const sessionQuery = useSession();
+  const auth = useAuthMutations();
+  const queryClient = useQueryClient();
   const cartQuery = useQuery({
     queryKey: ["cart"],
     queryFn: ({ signal }) => getCart(signal),
@@ -30,6 +35,35 @@ export function Header() {
       toast.error("Não foi possível carregar o carrinho", { id: "cart-load-error" });
     }
   }, [cartQuery.isError]);
+
+  useEffect(() => {
+    if (sessionQuery.isError) {
+      toast.error(toApiError(sessionQuery.error).message, { id: "session-load-error" });
+    }
+  }, [sessionQuery.error, sessionQuery.isError]);
+
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      clearAuthenticatedCache(queryClient);
+      setIsAuthOpen(true);
+      toast.warning("Sua sessão expirou. Entre novamente para continuar.", { id: "session-expired" });
+    };
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+  }, [queryClient]);
+
+  const handleAuthAction = async () => {
+    if (!sessionQuery.data) {
+      setIsAuthOpen(true);
+      return;
+    }
+    try {
+      await auth.logout();
+      toast.success("Você saiu da sua conta");
+    } catch (error) {
+      toast.error(toApiError(error).message);
+    }
+  };
 
   const links = [
     { to: "/", label: "Início" },
@@ -43,6 +77,9 @@ export function Header() {
     1,
     !isSearchExpanded,
   );
+  let authActionLabel = "Entrar";
+  if (sessionQuery.data) authActionLabel = "Sair";
+  if (auth.isLoggingOut) authActionLabel = "Saindo...";
 
   return (
     <header className="max-w-300 sticky top-0 z-50 w-full border-b-0 md:border-b border-border bg-background mx-auto px-4 xl:px-0">
@@ -91,9 +128,13 @@ export function Header() {
             hasError={cartQuery.isError}
           />
 
-          <Button className="ml-2 -mr-1 translate-x-1 px-6" onClick={() => setIsAuthOpen(true)}>
+          <Button
+            className="ml-2 -mr-1 translate-x-1 px-6"
+            onClick={handleAuthAction}
+            disabled={auth.isLoggingOut}
+          >
             <Icon name="logout" set="curved" primaryColor="currentColor" size={24} />
-            <span>Entrar</span>
+            <span>{authActionLabel}</span>
           </Button>
         </div>
       </div>
@@ -106,8 +147,9 @@ export function Header() {
           type="button"
           variant="ghostPrimary"
           size="icon"
-          aria-label="Entrar"
-          onClick={() => setIsAuthOpen(true)}
+          aria-label={sessionQuery.data ? "Sair da conta" : "Entrar"}
+          onClick={handleAuthAction}
+          disabled={auth.isLoggingOut}
           className="shrink-0"
         >
           <UserRound className="size-5" />

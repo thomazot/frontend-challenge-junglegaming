@@ -53,3 +53,14 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+@layer components {
+  .newsletter-email-input:-webkit-autofill,
+  .newsletter-email-input:-webkit-autofill:hover,
+  .newsletter-email-input:-webkit-autofill:focus,
+  .newsletter-email-input:autofill {
+    -webkit-box-shadow: inset 0 0 0 1000px var(--color-surface-dark) !important;
+    -webkit-text-fill-color: var(--color-foreground) !important;
+    caret-color: var(--color-primary);
+  }
+}

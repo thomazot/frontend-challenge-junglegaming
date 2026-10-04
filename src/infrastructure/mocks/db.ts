@@ -44,6 +44,7 @@ export interface DbState {
   nfts: Nft[];
   reviews: Record<string, NftReview[]>;
   favorites: Record<string, string[]>;
+  newsletterSubscribers: { email: string; subscribedAt: string }[];
   /** Keyed by `user:<id>` or `guest:<id>`. */
   carts: Record<string, CartRecord>;
   wallets: Record<string, Wallet[]>;
@@ -99,6 +100,7 @@ const seed = async (scenarioId: string): Promise<DbState> => {
     nfts,
     reviews: Object.fromEntries(nfts.map((nft) => [nft.id, buildNftReviews(nft.id)])),
     favorites: { "u-1": ["2", "5"], "u-2": [] },
+    newsletterSubscribers: [],
     carts: {},
     wallets: structuredClone(SEED_WALLETS),
     orders: [],
@@ -139,6 +141,7 @@ export const initDb = async (): Promise<DbState> => {
     if (raw) {
       const parsed = JSON.parse(raw) as DbState;
       if (Array.isArray(parsed.nfts) && Array.isArray(parsed.users) && parsed.reviews) {
+        parsed.newsletterSubscribers ??= [];
         state = parsed;
         return state;
       }

@@ -132,6 +132,17 @@ export interface LoginInput {
   password: string;
 }
 
+/* ----------------------------- Newsletter ---------------------------- */
+export interface NewsletterSubscriptionInput {
+  email: string;
+}
+
+export interface NewsletterSubscription {
+  email: string;
+  subscribedAt: string;
+  alreadySubscribed: boolean;
+}
+
 /* ------------------------------ Profile ------------------------------ */
 export interface Profile extends User {
   phone?: string;
