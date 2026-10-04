@@ -21,12 +21,38 @@ export function NftFavoriteButton({ nftId, onError, className, compact = false }
   });
   const favoriteMutation = useMutation({
     mutationFn: (shouldFavorite: boolean) => (shouldFavorite ? addFavorite(nftId) : removeFavorite(nftId)),
+    onMutate: async (shouldFavorite) => {
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: ["favorites"] }),
+        queryClient.cancelQueries({ queryKey: ["nft-favorite", nftId] }),
+      ]);
+      const previousFavorite = queryClient.getQueryData<boolean>(["nft-favorite", nftId]);
+      const previousFavorites = queryClient.getQueryData<string[]>(["favorites"]);
+      queryClient.setQueryData(["nft-favorite", nftId], shouldFavorite);
+      if (previousFavorites) {
+        const nextFavorites = shouldFavorite
+          ? [...new Set([...previousFavorites, nftId])]
+          : previousFavorites.filter((favoriteId) => favoriteId !== nftId);
+        queryClient.setQueryData(["favorites"], nextFavorites);
+      }
+      return { previousFavorite, previousFavorites };
+    },
     onSuccess: (nftIds) => {
       queryClient.setQueryData(["favorites"], nftIds);
       queryClient.setQueryData(["nft-favorite", nftId], nftIds.includes(nftId));
       onError();
     },
-    onError: (error) => {
+    onError: (error, _shouldFavorite, context) => {
+      if (context?.previousFavorite === undefined) {
+        queryClient.removeQueries({ queryKey: ["nft-favorite", nftId], exact: true });
+      } else {
+        queryClient.setQueryData(["nft-favorite", nftId], context.previousFavorite);
+      }
+      if (context?.previousFavorites === undefined) {
+        queryClient.removeQueries({ queryKey: ["favorites"], exact: true });
+      } else {
+        queryClient.setQueryData(["favorites"], context.previousFavorites);
+      }
       const apiError = toApiError(error);
       onError(
         apiError.code === "UNAUTHENTICATED" || apiError.code === "SESSION_EXPIRED"

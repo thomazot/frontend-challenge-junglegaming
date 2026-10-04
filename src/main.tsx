@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { AppProviders } from "./app/providers/AppProviders";
 import "./index.css";
 
 async function enableMocking() {
@@ -10,7 +9,9 @@ async function enableMocking() {
   await startMocks();
 }
 
-enableMocking().then(() => {
+enableMocking().then(async () => {
+  // Engine.IO captures globalThis.WebSocket at import time; load the app after MSW patches it.
+  const { AppProviders } = await import("./app/providers/AppProviders");
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <AppProviders />

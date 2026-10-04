@@ -4,7 +4,7 @@ import { subscribeEvents } from "./events";
 import { readSession } from "./server";
 
 const socketIoUrl = (): string => {
-  const url = new URL("/socket.io/", window.location.origin);
+  const url = new URL(window.location.origin);
   url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
   return url.toString();
 };
@@ -32,7 +32,7 @@ export const socketHandlers = [
     const io = toSocketIo(connection);
     const unsubscribe = subscribeEvents(({ event, audienceUserId }) => {
       if (audienceUserId && readSession(readCookies()).user?.id !== audienceUserId) return;
-      io.server.emit(event.type, event);
+      io.client.emit(event.type, event);
     });
     io.rawClient.addEventListener("close", () => unsubscribe());
   }),

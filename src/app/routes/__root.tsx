@@ -5,12 +5,14 @@ import { Header } from '@/shared/components/Header';
 import { Footer } from '@/shared/components/Footer';
 import { MockControlPanel } from '@/infrastructure/mocks/MockControlPanel';
 import { cn } from '@/shared/utils/utils';
+import { useRealtimeSync } from '@/app/hooks/use-realtime-sync';
 
 export const Route = createRootRoute({
   component: RootComponent,
 });
 
 function RootComponent() {
+  useRealtimeSync();
   const isNftDetail = useRouterState({
     select: ({ location }) => location.pathname.startsWith('/nft/'),
   });

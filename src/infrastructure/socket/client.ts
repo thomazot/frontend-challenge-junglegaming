@@ -6,19 +6,17 @@ export type RealtimeStatus = "connected" | "disconnected";
 let socket: Socket | undefined;
 
 /**
- * Lazy singleton. Same-origin `/socket.io/` endpoint over plain WebSocket
- * (no HTTP polling), so the MSW binding can intercept it in demo builds.
+ * Lazy singleton. Same-origin Socket.IO endpoint over plain WebSocket (no HTTP
+ * polling), so the MSW binding can intercept it in demo builds.
  */
 export const getSocket = (): Socket => {
-  if (!socket) {
-    socket = io({
-      path: "/socket.io/",
-      transports: ["websocket"],
-      autoConnect: false,
-      reconnectionDelay: 500,
-      reconnectionDelayMax: 5_000,
-    });
-  }
+  socket ??= io({
+    path: "/socket.io/",
+    transports: ["websocket"],
+    autoConnect: false,
+    reconnectionDelay: 500,
+    reconnectionDelayMax: 5_000,
+  });
   return socket;
 };
 
