@@ -1,4 +1,4 @@
-import type { Nft, NftListParams, NftListResponse } from "@/shared/api/contracts";
+import type { Nft, NftListParams, NftListResponse, NftReviewsResponse } from "@/shared/api/contracts";
 import { http } from "@/shared/api/http";
 
 /** The mock accepts arrays as CSV; axios would otherwise emit `key[]=` entries the API rejects. */
@@ -23,5 +23,17 @@ export const listNfts = async (params: NftListParams = {}, signal?: AbortSignal)
 
 export const getNft = async (idOrSlug: string, signal?: AbortSignal): Promise<Nft> => {
   const { data } = await http.get<Nft>(`/nfts/${idOrSlug}`, { signal });
+  return data;
+};
+
+export const getNftReviews = async (
+  idOrSlug: string,
+  limit = 3,
+  signal?: AbortSignal,
+): Promise<NftReviewsResponse> => {
+  const { data } = await http.get<NftReviewsResponse>(`/nfts/${idOrSlug}/reviews`, {
+    params: { limit },
+    signal,
+  });
   return data;
 };

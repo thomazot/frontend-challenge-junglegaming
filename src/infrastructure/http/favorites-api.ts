@@ -4,6 +4,11 @@ interface FavoritesResponse {
   nftIds: string[];
 }
 
+export const getFavoriteStatus = async (nftId: string, signal?: AbortSignal): Promise<boolean> => {
+  const { data } = await http.get<{ isFavorite: boolean }>(`/nfts/${nftId}/favorite`, { signal });
+  return data.isFavorite;
+};
+
 export const listFavorites = async (signal?: AbortSignal): Promise<string[]> => {
   const { data } = await http.get<FavoritesResponse>("/favorites", { signal });
   return data.nftIds;

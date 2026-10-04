@@ -10,10 +10,16 @@ import { cn } from "cn";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/shared/ui/sheet";
 import { CatalogSidebar } from "@/features/catalog/components/CatalogSidebar";
 import { useSlidingIndicator } from "@/shared/hooks/useSlidingIndicator";
+import { useQuery } from "@tanstack/react-query";
+import { getCart } from "@/infrastructure/http";
 
 export function Header() {
   const location = useLocation();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const cartQuery = useQuery({
+    queryKey: ["cart"],
+    queryFn: ({ signal }) => getCart(signal),
+  });
 
   const links = [
     { to: "/", label: "Início" },
@@ -70,7 +76,10 @@ export function Header() {
           'flex-auto justify-end': isSearchExpanded,
         })}>
           <HeaderSearch isExpanded={isSearchExpanded} setIsExpanded={setIsSearchExpanded} />
-          <HeaderCart />
+          <HeaderCart
+            itemCount={cartQuery.data?.items?.reduce((count, item) => count + item.quantity, 0)}
+            hasError={cartQuery.isError}
+          />
 
           <Button className="ml-2 -mr-1 translate-x-1 px-6">
             <Icon name="logout" set="curved" primaryColor="currentColor" size={24} />

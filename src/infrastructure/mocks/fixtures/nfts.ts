@@ -103,6 +103,17 @@ const buildNft = (index: number): Nft => {
       ? FEATURED_APE.description
       : `Edição digital exclusiva da coleção ${COLLECTIONS[index % COLLECTIONS.length]}.`,
     image: isFeatured ? "/images/emerald-ape-042.png" : relatedApe?.image ?? "/images/monkey-nft.jpg",
+    ...(isFeatured
+      ? {
+          galleryImages: [
+            "/images/emerald-ape-042.png",
+            "/images/violet-nomad.png",
+            "/images/ivory-baron.png",
+            "/images/golden-beat.png",
+            "/images/monkey-nft.jpg",
+          ],
+        }
+      : {}),
     collection: isFeatured || relatedApe ? "Kurio Apes" : COLLECTIONS[index % COLLECTIONS.length],
     network: NETWORKS[index % NETWORKS.length],
     creator: isFeatured ? FEATURED_APE.creator : CREATORS[index % CREATORS.length],

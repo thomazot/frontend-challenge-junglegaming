@@ -1,6 +1,7 @@
+import { useState } from "react";
 import type { Nft } from "@/shared/api/contracts";
 import { Card } from "@/shared/ui/card";
-import { Icon } from "@/shared/components/Icon";
+import { NftFavoriteButton } from "../NftFavoriteButton";
 import { NftGallery } from "../NftGallery";
 import { NftInfo } from "../NftInfo";
 import { NftTabs } from "../NftTabs";
@@ -11,6 +12,9 @@ interface NftDetailProps {
 }
 
 export function NftDetail({ nft }: NftDetailProps) {
+  const [actionError, setActionError] = useState<string>();
+  const galleryImages = nft.galleryImages?.length ? nft.galleryImages : [nft.image];
+
   return (
     <div className="mx-auto flex min-h-dvh w-full flex-col gap-4 rounded-[40px] bg-surface-raised pt-4 md:pt-0 pb-40 md:min-h-0 md:gap-24 md:rounded-none md:bg-transparent md:pb-16 ">
       <section className="flex flex-col gap-4 md:gap-6">
@@ -24,14 +28,14 @@ export function NftDetail({ nft }: NftDetailProps) {
               <path d="m15 18-6-6 6-6" />
             </svg>
           </a>
-          <button
-            type="button"
+          <NftFavoriteButton
+            nftId={nft.id}
+            onError={setActionError}
+            compact
             className="flex size-8.75 flex-col items-center justify-center gap-2.5 self-stretch rounded-[17.5px] border border-border bg-surface-raised text-primary"
-            aria-label="Favoritar NFT"
-          >
-            <Icon name="heart-outline" size={20} />
-          </button>
+          />
         </div>
+        {actionError && <p role="alert" className="text-sm text-text-coral">{actionError}</p>}
 
         {/* Breadcrumb */}
         <nav className="hidden items-center gap-2 text-[15px] font-bold text-foreground md:flex" aria-label="Breadcrumb">
@@ -46,25 +50,19 @@ export function NftDetail({ nft }: NftDetailProps) {
         <div className="grid grid-cols-1 items-start gap-0 md:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-8">
           <div className="min-w-0">
             <NftGallery
-              images={[
-                { id: `${nft.id}-main`, src: nft.image },
-                { id: `${nft.id}-violet`, src: "/images/violet-nomad.png" },
-                { id: `${nft.id}-ivory`, src: "/images/ivory-baron.png" },
-                { id: `${nft.id}-golden`, src: "/images/golden-beat.png" },
-                { id: `${nft.id}-original`, src: "/images/monkey-nft.jpg" },
-              ]}
+              images={galleryImages.map((src, index) => ({ id: `${nft.id}-image-${index}`, src }))}
               name={nft.name}
             />
           </div>
           <Card className="relative z-10 -mx-4 -mt-8 min-w-0 gap-0 rounded-t-3xl rounded-b-none border-0 bg-surface-card px-8 py-5 shadow-none md:mx-0 md:mt-0 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none">
-            <NftInfo nft={nft} />
+            <NftInfo nft={nft} onActionError={setActionError} />
           </Card>
         </div>
       </section>
 
       {/* Tabs */}
       <div className="hidden lg:block">
-        <NftTabs description={nft.description} />
+        <NftTabs nft={nft} />
       </div>
 
       {/* Related NFTs */}

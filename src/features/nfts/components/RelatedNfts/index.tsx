@@ -18,7 +18,7 @@ export function RelatedNfts({ currentNft }: RelatedNftsProps) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [selectedSnap, setSelectedSnap] = useState(0);
   const [snapCount, setSnapCount] = useState(0);
-  const { data } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ["nfts", { collection: [currentNft.collection], limit: 48 }],
     queryFn: ({ signal }) => listNfts({ collection: [currentNft.collection], limit: 48 }, signal),
   });
@@ -43,6 +43,9 @@ export function RelatedNfts({ currentNft }: RelatedNftsProps) {
     };
   }, [carouselApi, onCarouselSelect]);
 
+  if (isError) {
+    return <p role="alert" className="text-sm text-text-coral">Não foi possível carregar os NFTs desta coleção.</p>;
+  }
   if (related.length === 0) return null;
 
   return (

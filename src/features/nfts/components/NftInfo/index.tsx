@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Nft } from "@/shared/api/contracts";
 import { Icon } from "@/shared/components/Icon";
+import { NftFavoriteButton } from "../NftFavoriteButton";
+import { useNftReviews } from "../../hooks/use-nft-reviews";
+import { addCartItem } from "@/infrastructure/http/cart-api";
+import { toApiError } from "@/shared/api/http";
 import { formatEth, mulEthInt } from "@/shared/lib/eth";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -31,22 +36,60 @@ const floatingPurchaseFooterVariants = cva(
 
 interface NftInfoProps {
   readonly nft: Nft;
+  readonly onActionError: (message?: string) => void;
 }
 
-export function NftInfo({ nft }: NftInfoProps) {
+export function NftInfo({ nft, onActionError }: NftInfoProps) {
   const [quantity, setQuantity] = useState(1);
+  const queryClient = useQueryClient();
+  const reviewsQuery = useNftReviews(nft.id, 1);
+  const rating = reviewsQuery.data
+    ? { score: reviewsQuery.data.meta.average, count: reviewsQuery.data.meta.total }
+    : nft.rating;
+  const addToCartMutation = useMutation({
+    mutationFn: () => addCartItem({ nftId: nft.id, quantity }),
+    onSuccess: (cart) => {
+      queryClient.setQueryData(["cart"], cart);
+      onActionError();
+    },
+    onError: (error) => onActionError(toApiError(error).message),
+  });
+  const addToCart = () => {
+    onActionError();
+    addToCartMutation.mutate();
+  };
+
   const totalPrice = formatEth(mulEthInt(nft.price, quantity), 2, ".");
   const unitPrice = formatEth(nft.price, 2, ".");
+  const maxQuantity = Math.min(nft.maxPerOrder, nft.edition.available);
+  const shareUrl = typeof window === "undefined" ? "" : window.location.href;
+  const shareLinks = [
+    {
+      id: "linkedin",
+      label: "Compartilhar no LinkedIn",
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+    },
+    {
+      id: "email",
+      label: "Compartilhar por e-mail",
+      href: `mailto:?subject=${encodeURIComponent(nft.name)}&body=${encodeURIComponent(shareUrl)}`,
+    },
+    {
+      id: "twitter",
+      label: "Compartilhar no Twitter",
+      href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(nft.name)}`,
+    },
+  ] as const;
 
   const decrement = () => setQuantity((current) => Math.max(1, current - 1));
-  const increment = () => setQuantity((current) => Math.min(nft.maxPerOrder, current + 1));
+  const increment = () => setQuantity((current) => Math.min(maxQuantity, current + 1));
 
   return (
     <div className="flex flex-col gap-5 text-text-secondary md:gap-6">
       <header className="-mb-2 flex flex-col gap-3 md:mb-0">
         <div className="flex items-center justify-between gap-2">
           <h1 className="font-mono text-xl font-bold leading-7 text-foreground md:text-3xl">{nft.name}</h1>
-          {nft.rating && <Rating rating={nft.rating} className="md:hidden" />}
+          {rating && <Rating rating={rating} className="md:hidden" />}
         </div>
         <div className="hidden flex-col gap-2 md:flex">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -58,7 +101,7 @@ export function NftInfo({ nft }: NftInfoProps) {
                 </span>
               )}
             </div>
-            {nft.rating && <DesktopRating rating={nft.rating} />}
+            {rating && <DesktopRating rating={rating} />}
           </div>
           <Separator className="bg-border-soft" />
         </div>
@@ -86,23 +129,23 @@ export function NftInfo({ nft }: NftInfoProps) {
       <section className="hidden items-center justify-between gap-4 md:flex">
         <QuantitySelector
           quantity={quantity}
-          max={nft.maxPerOrder}
+          max={maxQuantity}
           onDecrement={decrement}
           onIncrement={increment}
         />
         <div className="flex items-center gap-2">
-          <Button className="h-10 min-w-32 rounded-md bg-primary px-8 font-mono text-sm font-bold text-ink-deep hover:bg-primary-dark">
+          <Button
+            className="h-10 min-w-32 rounded-md bg-primary px-8 font-mono text-sm font-bold text-ink-deep hover:bg-primary-dark"
+            disabled={addToCartMutation.isPending || maxQuantity === 0}
+            onClick={addToCart}
+          >
             COMPRAR
           </Button>
-          <Button
-            type="button"
-            variant="outline"
+          <NftFavoriteButton
+            nftId={nft.id}
+            onError={onActionError}
             className="h-10 rounded-md border-primary bg-transparent px-4 font-mono text-sm font-semibold text-primary hover:bg-primary/10 hover:text-primary"
-            aria-label="Favoritar NFT"
-          >
-            <Icon name="heart-outline" size={20} />
-            Favoritar
-          </Button>
+          />
         </div>
       </section>
 
@@ -115,15 +158,17 @@ export function NftInfo({ nft }: NftInfoProps) {
       <div className="hidden flex-wrap items-center gap-2 text-[15px] font-bold text-white md:flex">
         <span>Compartilhar este NFT:</span>
         <div className="flex items-center gap-2">
-          {(["linkedin", "email", "twitter"] as const).map((social) => (
-            <button
-              key={social}
-              type="button"
+          {shareLinks.map((social) => (
+            <a
+              key={social.id}
+              href={social.href}
+              target={social.id === "email" ? undefined : "_blank"}
+              rel={social.id === "email" ? undefined : "noreferrer"}
               className="flex items-center justify-center border-0 bg-transparent p-0 text-white transition-colors hover:text-primary"
-              aria-label={`Compartilhar no ${social}`}
+              aria-label={social.label}
             >
-              <Icon name={social} size={18} />
-            </button>
+              <Icon name={social.id} size={18} />
+            </a>
           ))}
         </div>
       </div>
@@ -134,7 +179,7 @@ export function NftInfo({ nft }: NftInfoProps) {
             <span className="font-mono text-[15px] font-medium text-text-secondary">Qtd.</span>
             <QuantitySelector
               quantity={quantity}
-              max={nft.maxPerOrder}
+              max={maxQuantity}
               onDecrement={decrement}
               onIncrement={increment}
             />
@@ -142,18 +187,25 @@ export function NftInfo({ nft }: NftInfoProps) {
           <span className="text-right font-mono text-xl font-bold leading-4 text-text-accent">{totalPrice} ETH</span>
         </div>
         <div className="flex items-center justify-start gap-3">
-          <Button className="h-15 w-49 justify-start rounded-[40px] bg-[linear-gradient(93deg,#D28A4C_-3.96%,rgba(210,138,76,0.8)_121.97%)] px-11 font-mono text-base font-bold leading-5 text-ink hover:bg-primary">
-            Comprar NFT
+          <Button
+            className="h-15 w-49 justify-start rounded-[40px] bg-[linear-gradient(93deg,#D28A4C_-3.96%,rgba(210,138,76,0.8)_121.97%)] px-11 font-mono text-base font-bold leading-5 text-ink hover:bg-primary"
+            disabled={addToCartMutation.isPending || maxQuantity === 0}
+            onClick={addToCart}
+          >
+            {addToCartMutation.isPending ? "Adicionando..." : "Comprar NFT"}
           </Button>
           <Button
             type="button"
             variant="outline"
             className="size-15 rounded-full border-border bg-surface-raised p-0 text-secondary shadow-none hover:bg-surface-raised"
-            aria-label="Abrir carrinho"
+            aria-label="Adicionar ao carrinho"
+            disabled={addToCartMutation.isPending || maxQuantity === 0}
+            onClick={addToCart}
           >
             <Icon name="cart-buy" className="size-5" size={20} />
           </Button>
         </div>
+        {maxQuantity === 0 && <p className="text-sm text-text-coral">Este NFT está esgotado.</p>}
       </div>
     </div>
   );

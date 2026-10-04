@@ -46,6 +46,7 @@ export interface Nft {
   name: string;
   description: string;
   image: string;
+  galleryImages?: string[];
   collection: string;
   network: NetworkId;
   creator: string;
@@ -62,6 +63,20 @@ export interface Nft {
   /** Monotonic per-resource version, used to discard stale events/responses. */
   version: number;
   updatedAt: string;
+}
+
+export interface NftReview {
+  id: string;
+  nftId: string;
+  author: string;
+  score: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface NftReviewsResponse {
+  data: NftReview[];
+  meta: { total: number; average: number };
 }
 
 export interface NftListParams {

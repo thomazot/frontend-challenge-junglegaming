@@ -26,12 +26,9 @@ export const catalogHandlers = [
       (!params.maxPrice || compareEth(nft.price, params.maxPrice) <= 0);
 
     const base = all.filter(matchesBase);
-    const byTab =
-      params.tab === "novos"
-        ? base.filter((nft) => nft.tags.includes("new"))
-        : params.tab === "alta"
-          ? base.filter((nft) => nft.tags.includes("trending"))
-          : base;
+    let byTab = base;
+    if (params.tab === "novos") byTab = base.filter((nft) => nft.tags.includes("new"));
+    if (params.tab === "alta") byTab = base.filter((nft) => nft.tags.includes("trending"));
     const filtered = byTab.filter(
       (nft) =>
         (!params.collection?.length || params.collection.includes(nft.collection)) &&
@@ -69,6 +66,35 @@ export const catalogHandlers = [
       },
     };
     return ok(body);
+  }),
+
+  route("get", "/api/nfts/:id/reviews", (ctx) => {
+    const nft = ctx.db.nfts.find((candidate) => candidate.id === ctx.params.id || candidate.slug === ctx.params.id);
+    if (!nft) throw new ApiFailure(404, "NOT_FOUND", "NFT não encontrado");
+
+    const rawLimit = ctx.url.searchParams.get("limit");
+    const limit = rawLimit === null ? 3 : Number(rawLimit);
+    if (!Number.isInteger(limit) || limit < 1 || limit > 50) {
+      throw new ApiFailure(422, "VALIDATION_ERROR", "O limite deve ser um número entre 1 e 50");
+    }
+
+    const reviews = ctx.db.reviews[nft.id] ?? [];
+    const average = reviews.length
+      ? Math.round((reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length) * 10) / 10
+      : 0;
+    return ok({
+      data: reviews.slice(0, limit),
+      meta: { total: reviews.length, average },
+    });
+  }),
+
+  route("get", "/api/nfts/:id/favorite", (ctx) => {
+    const nft = ctx.db.nfts.find((candidate) => candidate.id === ctx.params.id || candidate.slug === ctx.params.id);
+    if (!nft) throw new ApiFailure(404, "NOT_FOUND", "NFT não encontrado");
+    const isFavorite = ctx.maybeUser
+      ? (ctx.db.favorites[ctx.maybeUser.id] ?? []).includes(nft.id)
+      : false;
+    return ok({ isFavorite });
   }),
 
   route("get", "/api/nfts/:id", (ctx) => {

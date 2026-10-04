@@ -1,9 +1,10 @@
-import type { Nft, Order, OrderInput, Wallet } from "@/shared/api/contracts";
+import type { Nft, NftReview, Order, OrderInput, Wallet } from "@/shared/api/contracts";
 import { buildNfts } from "./fixtures/nfts";
+import { buildNftReviews } from "./fixtures/nft-reviews";
 import { SEED_USERS, SEED_WALLETS } from "./fixtures/accounts";
 import { DEFAULT_SCENARIO_ID, findScenario } from "./scenarios";
 
-const STORAGE_KEY = "mocks:db:v4";
+const STORAGE_KEY = "mocks:db:v5";
 const PBKDF2_ITERATIONS = 100_000;
 
 export interface UserRecord {
@@ -41,6 +42,7 @@ export interface DbState {
   users: UserRecord[];
   sessions: Record<string, SessionRecord>;
   nfts: Nft[];
+  reviews: Record<string, NftReview[]>;
   favorites: Record<string, string[]>;
   /** Keyed by `user:<id>` or `guest:<id>`. */
   carts: Record<string, CartRecord>;
@@ -73,6 +75,7 @@ export const hashPassword = async (password: string, saltHex: string): Promise<s
 };
 
 const seed = async (scenarioId: string): Promise<DbState> => {
+  const nfts = buildNfts();
   const users: UserRecord[] = [];
   const hashedUsers = await Promise.all(
     SEED_USERS.map(async (user) => {
@@ -93,7 +96,8 @@ const seed = async (scenarioId: string): Promise<DbState> => {
     counters: { order: 0, wallet: 10, user: 10, event: 0, guest: 0 },
     users,
     sessions: {},
-    nfts: buildNfts(),
+    nfts,
+    reviews: Object.fromEntries(nfts.map((nft) => [nft.id, buildNftReviews(nft.id)])),
     favorites: { "u-1": ["2", "5"], "u-2": [] },
     carts: {},
     wallets: structuredClone(SEED_WALLETS),
@@ -134,7 +138,7 @@ export const initDb = async (): Promise<DbState> => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as DbState;
-      if (Array.isArray(parsed.nfts) && Array.isArray(parsed.users)) {
+      if (Array.isArray(parsed.nfts) && Array.isArray(parsed.users) && parsed.reviews) {
         state = parsed;
         return state;
       }
