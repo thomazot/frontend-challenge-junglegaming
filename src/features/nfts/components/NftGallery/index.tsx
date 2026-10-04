@@ -77,10 +77,10 @@ export function NftGallery({ images, name }: NftGalleryProps) {
 
       <DialogPrimitive.Root open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/90 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
+          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/90 duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
           <DialogPrimitive.Content
             aria-describedby={undefined}
-            className="fixed inset-4 z-50 flex flex-col gap-4 overflow-auto rounded-2xl border border-border bg-surface-card p-4 text-foreground shadow-2xl outline-none md:inset-8 md:flex-row md:gap-6 md:p-6"
+            className="fixed inset-4 z-50 flex flex-col gap-4 overflow-auto rounded-2xl border border-border bg-surface-card p-4 text-foreground shadow-2xl outline-none duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 md:inset-8 md:flex-row md:gap-6 md:p-6"
           >
             <DialogPrimitive.Title className="sr-only">{name} - visualizador de imagens</DialogPrimitive.Title>
 

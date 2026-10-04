@@ -9,8 +9,12 @@ import { useDebouncedValue } from "@/shared/hooks/use-debounced-value";
  */
 export function useCatalogSearch() {
   const navigate = useNavigate();
-  const pathname = useLocation({ select: (location) => location.pathname });
+  const location = useLocation({
+    select: (location) => ({ pathname: location.pathname, search: location.search }),
+  });
+  const { pathname, search: routeSearch } = location;
   const isCatalog = pathname === "/";
+  const queryFromRoute = typeof routeSearch.q === "string" ? routeSearch.q : "";
 
   // Parse q from URL directly to avoid useSearch() hook which requires active route match
   const getQFromUrl = () => {
@@ -32,13 +36,16 @@ export function useCatalogSearch() {
   useEffect(() => {
     // URL changed externally (back/forward): sync the input without re-navigating.
     isTypingRef.current = false;
-    setValue(getQFromUrl());
-  }, [pathname]); // Re-sync when route changes
+    setValue(queryFromRoute);
+  }, [pathname, queryFromRoute]); // Re-sync when route or search changes
 
   useEffect(() => {
-    if (!isCatalog || !isTypingRef.current) return;
+    if (!isTypingRef.current) return;
     const q = debounced.trim();
-    if (q === getQFromUrl()) return;
+    if (isCatalog && q === getQFromUrl()) {
+      isTypingRef.current = false;
+      return;
+    }
     isTypingRef.current = false;
     navigate({
       to: "/",

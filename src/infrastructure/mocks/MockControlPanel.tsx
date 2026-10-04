@@ -29,7 +29,7 @@ export function MockControlPanel() {
   };
 
   return (
-    <div className="fixed bottom-20 right-4 z-[9998] font-mono text-xs">
+    <div className="fixed bottom-20 right-4 z-9998 font-mono text-xs">
       {isOpen ? (
         <div className="bg-card border border-border rounded-lg p-4 shadow-xl flex flex-col gap-3 min-w-48">
           <div className="flex items-center justify-between gap-2">

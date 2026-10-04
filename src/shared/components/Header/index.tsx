@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Logo } from "@/shared/components/Logo";
 import { Icon } from "@/shared/components/Icon";
@@ -12,6 +12,7 @@ import { CatalogSidebar } from "@/features/catalog/components/CatalogSidebar";
 import { useSlidingIndicator } from "@/shared/hooks/useSlidingIndicator";
 import { useQuery } from "@tanstack/react-query";
 import { getCart } from "@/infrastructure/http";
+import { toast } from "sonner";
 
 export function Header() {
   const location = useLocation();
@@ -20,6 +21,12 @@ export function Header() {
     queryKey: ["cart"],
     queryFn: ({ signal }) => getCart(signal),
   });
+
+  useEffect(() => {
+    if (cartQuery.isError) {
+      toast.error("Não foi possível carregar o carrinho", { id: "cart-load-error" });
+    }
+  }, [cartQuery.isError]);
 
   const links = [
     { to: "/", label: "Início" },

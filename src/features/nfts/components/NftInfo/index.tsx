@@ -11,6 +11,9 @@ import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Separator } from "@/shared/ui/separator";
 import { cva } from "class-variance-authority";
+import { toast } from "sonner";
+
+const cartWarningCodes = new Set(["CONFLICT", "OUT_OF_STOCK", "PRICE_CHANGED", "QUOTE_STALE"]);
 
 const floatingPurchaseFooterVariants = cva(
   "fixed inset-x-0 bottom-0 z-50 flex w-screen flex-col gap-4 px-5 pt-5 pb-6 md:hidden",
@@ -50,12 +53,17 @@ export function NftInfo({ nft, onActionError }: NftInfoProps) {
     mutationFn: () => addCartItem({ nftId: nft.id, quantity }),
     onSuccess: (cart) => {
       queryClient.setQueryData(["cart"], cart);
-      onActionError();
+      toast.success("Adicionado ao carrinho", {
+        description: `${quantity} × ${nft.name}`,
+      });
     },
-    onError: (error) => onActionError(toApiError(error).message),
+    onError: (error) => {
+      const apiError = toApiError(error);
+      const notify = cartWarningCodes.has(apiError.code) ? toast.warning : toast.error;
+      notify(apiError.message, { description: nft.name });
+    },
   });
   const addToCart = () => {
-    onActionError();
     addToCartMutation.mutate();
   };
 

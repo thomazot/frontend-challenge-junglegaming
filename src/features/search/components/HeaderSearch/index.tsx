@@ -4,6 +4,7 @@ import { Input } from "@/shared/ui/input";
 import { cva } from "class-variance-authority";
 import { Icon } from "@/shared/components/Icon";
 import { useCatalogSearch } from "@/features/catalog/hooks/use-catalog-search";
+import { X } from "lucide-react";
 
 const headerSearchVariants = {
   container: cva(
@@ -57,7 +58,8 @@ export function HeaderSearch({ isExpanded = false, setIsExpanded }: HeaderSearch
     <div className={headerSearchVariants.container({ isExpanded })}>
       <Input
         ref={inputRef}
-        type="search"
+        type="text"
+        role="searchbox"
         placeholder="Explorar coleções"
         aria-label="Explorar coleções"
         value={value}
@@ -69,6 +71,21 @@ export function HeaderSearch({ isExpanded = false, setIsExpanded }: HeaderSearch
           }
         }}
       />
+      {isExpanded && value && (
+        <Button
+          type="button"
+          variant="ghostPrimary"
+          size="icon-xs"
+          aria-label="Limpar busca"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => {
+            setValue("");
+            inputRef.current?.focus();
+          }}
+        >
+          <X className="size-5" />
+        </Button>
+      )}
       <Button
         variant="ghostPrimary"
         size="icon"
